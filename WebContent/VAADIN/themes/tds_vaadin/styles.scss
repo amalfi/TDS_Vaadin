@@ -1,0 +1,9 @@
+@import "addons.scss";
+@import "tds_vaadin.scss";
+
+/* This file prefixes all rules with the theme name to avoid causing conflicts with other themes. */
+/* The actual styles should be defined in tds_vaadin.scss */
+.tds_vaadin {
+  @include addons;
+  @include tds_vaadin;
+}

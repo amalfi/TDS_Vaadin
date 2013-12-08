@@ -24,8 +24,6 @@ import com.trainingdiary.database.HibernateUtil;
 
 
 @javax.persistence.Entity
-@ManagedBean
-@ViewScoped
 public class User implements Serializable 
 {
 
@@ -71,7 +69,7 @@ public class User implements Serializable
    }
  
    
-   public String login() //method which check if user which try to log in exist in database
+   public boolean login() //method which check if user which try to log in exist in database
    {
 	   boolean bEquals=false;
 	   Session session = HibernateUtil.getSessionFactory().openSession();
@@ -104,11 +102,13 @@ public class User implements Serializable
        if(bEquals==true)
        {
     	         
-    	   return "user-panel";
+    	  // return "user-panel";
+    	   return true;
        }
        else 
        {
-	     return "wrong-password-page";
+	    //return "wrong-password-page";
+    	   return false;
        }   
    }
 

@@ -25,25 +25,12 @@ import com.trainingdiary.database.HibernateUtil;
 
 
 @javax.persistence.Entity
-@ManagedBean
-@RequestScoped
 public class DiaryBean implements Serializable
 {
-	@ManagedProperty(value="#{programType}") 
-	private ProgramType programType;
+//--------------------------------------------------------Managed Property	
 	
-	public ProgramType getProgramType() 
-	{
-		return programType;
-	}
-	public void setProgramType(ProgramType programType) 
-	{
-		this.programType = programType;
-	}
-//---------------------------------------------------------	
-	
-	
-	static Logger log = Logger.getLogger(DiaryBean.class);
+	static Logger log = Logger.getLogger(DiaryBean.class);	
+
 	private static final long serialVersionUID = 1L;
 	private String nameOfDiary;
 	private Date diaryCreationDate;
@@ -52,6 +39,8 @@ public class DiaryBean implements Serializable
     public HashMap<String,Object> allDiaries = new HashMap<String,Object>();
     public String choosedDiary;
     boolean editable;
+    
+  //---------------------------------------------------------
 //Lists of diaries properties 
     private List<DiaryBean> diaryDescriptions;
 
@@ -123,8 +112,8 @@ public class DiaryBean implements Serializable
 	public void setEditable(boolean editable) {
 		this.editable = editable;
 	}
-//------------------------------------------------------------------
-	public boolean checkIfDiaryExistInDatabase(Session session, Transaction transaction, String DiaryName) //universal method which check before saving somthing, if element which you want to save doesn't exist yet in database
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	public static boolean checkIfDiaryExistInDatabase(Session session, Transaction transaction, String DiaryName) //universal method which check before saving somthing, if element which you want to save doesn't exist yet in database
 	{
 	boolean statement = false;
 		try 
@@ -139,7 +128,7 @@ public class DiaryBean implements Serializable
             			 if(currentDiaryName.equals(DiaryName))
                 		 {
                 	 		 log.debug("W bazie znaleziono dziennik o istniejacej juz nazwie " + DiaryName);
-            				 statement=true;
+            				 statement=true;	
                 		 }
                 log.debug("Currently loaded diary "+ diary.getNameOfDiary().toString());
               	}
@@ -163,7 +152,8 @@ public class DiaryBean implements Serializable
 
 	}
 
-	public String SaveDiary() //method which save diary0++
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	public static String SaveDiary(String programType, Date diaryCreationDate, String diaryDescription, String nameOfDiary) //method which save diary0++
 	   {
 	       Session session = HibernateUtil.getSessionFactory().openSession();
 	       Transaction transaction = null;
@@ -173,8 +163,8 @@ public class DiaryBean implements Serializable
 	       log.debug("Session.beginTransaction process started");
 	          transaction = session.beginTransaction();
 	          DiaryBean diaryBean = new DiaryBean();
-	       log.debug("Setting properties of new diary : "+choosedTrainingPlan+" , " + diaryCreationDate + ", " + diaryDescription + ", " + nameOfDiary);
-	          diaryBean.setChoosedTrainingPlan(programType.getProgramName());
+	       //log.debug("Setting properties of new diary : "+choosedTrainingPlan+" , " + diaryCreationDate + ", " + diaryDescription + ", " + nameOfDiary);
+	          diaryBean.setChoosedTrainingPlan(programType/*programType.getProgramName()*/);
 	          diaryBean.setDiaryCreationDate(diaryCreationDate);
 	          diaryBean.setDiaryDescription(diaryDescription);
 	          diaryBean.setNameOfDiary(nameOfDiary);
@@ -207,7 +197,8 @@ public class DiaryBean implements Serializable
 		return "";		  
 			
 	   }
-	  
+
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 		public HashMap<String,Object> getLoadDiaries()
 		{
 			allDiaries=LoadDiaries();
@@ -245,6 +236,7 @@ public class DiaryBean implements Serializable
 			return allDiaries;
 		}
 
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 		//getChoosedTrainingDiaryProperties
 		public HashMap<String,Object> getChoosedTrainingDiaryProperties()
 		{

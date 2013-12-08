@@ -1,6 +1,8 @@
 package com.trainingdiary.vaadin.ui;
 
-import com.vaadin.*;
+import org.apache.log4j.Logger;
+
+import com.trainingdiary.User;
 import com.vaadin.data.validator.AbstractValidator;
 import com.vaadin.data.validator.EmailValidator;
 import com.vaadin.navigator.View;
@@ -17,16 +19,17 @@ import com.vaadin.ui.themes.Reindeer;
 
 public class SimpleLoginView extends CustomComponent implements View,
         Button.ClickListener {
-
+	static Logger log = Logger.getLogger(User.class);
     public static final String NAME = "login";
-
+   
     private final TextField user;
 
     private final PasswordField password;
 
     private final Button loginButton;
 
-    public SimpleLoginView() {
+    public SimpleLoginView() 
+    {
         setSizeFull();
 
         // Create the user input field
@@ -98,7 +101,8 @@ public class SimpleLoginView extends CustomComponent implements View,
     }
 
     @Override
-    public void buttonClick(ClickEvent event) {
+    public void buttonClick(ClickEvent event)
+    {
 
          //
          // Validate the fields using the navigator. By using validors for the
@@ -116,10 +120,30 @@ public class SimpleLoginView extends CustomComponent implements View,
          // Validate username and password with database here. For examples sake
          // I use a dummy username and password.
          //
-        boolean isValid = username.equals("test@test.com")
-                && password.equals("passw0rd");
-
-        if(isValid){
+        //------------------------------------------------------------------------------------------
+        User user = new User();
+        user.setName(username);
+        user.setPassword(password);
+        boolean isValid=user.login();
+        if (isValid==true)
+        {
+        	log.debug("Login process succeed");
+        }
+        else if (isValid==false)
+        {
+        	log.debug("Login process failed");
+        }
+        
+        // isValid = username.equals("test@test.com") && password.equals("passw0rd"); //if isValid==true, that means combination of password and username exists in database
+        
+         
+        
+        
+        
+        
+        //------------------------------------------------------------------------------------------
+        if(isValid)
+        {
             // Store the current user in the service session
             getSession().setAttribute("user", username);
 

@@ -143,11 +143,6 @@ public class DiaryBean implements Serializable
 	           log.debug(e.getMessage());
 	       } 
 		
-	 	if (statement==true)
-	 	{		
-		FacesContext context = FacesContext.getCurrentInstance();  
-	 	context.addMessage(null, new FacesMessage("Diary with this name exist actually in database ! Choose another diary name !")); 
-	 	}
 		return statement;
 
 	}
@@ -179,10 +174,10 @@ public class DiaryBean implements Serializable
     		  }
 	       log.debug("Diary created succesfully");
 
-    	   FacesContext context = FacesContext.getCurrentInstance();  
-    	   context.addMessage(null, new FacesMessage("Diary saved successfully")); 
+  
 			
-	       } catch (HibernateException e) 
+	       } 
+	       catch (HibernateException e) 
 	       
 	       {
 	           transaction.rollback();

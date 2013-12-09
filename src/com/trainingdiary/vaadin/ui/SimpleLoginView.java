@@ -134,13 +134,7 @@ public class SimpleLoginView extends CustomComponent implements View,
         	log.debug("Login process failed");
         }
         
-        // isValid = username.equals("test@test.com") && password.equals("passw0rd"); //if isValid==true, that means combination of password and username exists in database
-        
-         
-        
-        
-        
-        
+
         //------------------------------------------------------------------------------------------
         if(isValid)
         {

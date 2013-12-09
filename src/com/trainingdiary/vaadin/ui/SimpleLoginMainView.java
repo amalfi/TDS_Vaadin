@@ -4,19 +4,18 @@ import java.util.Date;
 
 import org.apache.log4j.Logger;
 
-import com.google.gwt.user.client.ui.TextArea;
 import com.trainingdiary.DiaryBean;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.server.Sizeable;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.DateField;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.RichTextArea;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
@@ -106,8 +105,7 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
   
 //--------------------------------------------
   
-    @SuppressWarnings("deprecation")
-	public SimpleLoginMainView()  //here we can add action listeners etc
+    public SimpleLoginMainView()  //here we can add action listeners etc
     {
 //******************************************************************CREATE NEW DIARY TAB******************************************************************   	 
      // setCompositionRoot(new CssLayout(text, logout));  //tutaj w parametrachSetCompositionRoot ustawiamy komponenty jakie maja byc wstawione do widoku, 
@@ -137,6 +135,9 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 //******************************************************************END OF CREATE NEW DIARY TAB******************************************************************   	
 
 //******************************************************************CREATE ADD NEW TRAINING TAB******************************************************************   	 
+	  HorizontalLayout fittingLayout = new HorizontalLayout();
+	  fittingLayout.addComponent(verticalAddNewTrainingIntoExistingDiary);
+	  
 	  verticalAddNewTrainingIntoExistingDiary.addComponent(textfieldSecondTab);
 	  verticalAddNewTrainingIntoExistingDiary.addComponent(selectSecondTab);
 	  verticalAddNewTrainingIntoExistingDiary.addComponent(buttonInSecondTab);
@@ -237,15 +238,28 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 		private static final long serialVersionUID = 1L;
 		public void buttonClick(ClickEvent event) 
 		  {
+			 try
+			 {
+			
 					log.debug("Now i'm getting values of fields in UI");
 				  String sProgramType = String.valueOf(programType.getValue()); //programType
 				  Date dDate = date.getValue(); //diaryCreationDate
 				  String sNameOfTrainingDiary = String.valueOf(textfield.getValue()); //diaryDescription
 				  String sDescription = String.valueOf(area.getValue());
-	
-		  log.debug("Now i try to save date ");
-		  //String programType, Date diaryCreationDate, String diaryDescription, String nameOfDiary
-		  DiaryBean.SaveDiary(sProgramType, dDate, sDescription, sNameOfTrainingDiary);
+				  
+				  DiaryBean diary = new DiaryBean();
+				  log.debug("Now i try to save date ");
+				  DiaryBean.SaveDiary(sProgramType, dDate, sDescription, sNameOfTrainingDiary);
+				  
+			 }
+			 catch(Exception e)
+			 {
+				 
+				 log.debug("Zapis dziennika nie powiod³ siê");
+				 log.debug(e.getMessage());
+				 e.printStackTrace();
+			 }
+		  
 		  }
 	  }
 	  );

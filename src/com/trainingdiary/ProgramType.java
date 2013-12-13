@@ -119,7 +119,7 @@ public class ProgramType implements Serializable
 		return pts;
 	}
 
-	public String SaveProgram() //method which save new training program which will be used by creating new training diary
+	public static void SaveProgram(String programName, String programDescription, String trainingType) //method which save new training program which will be used by creating new training diary
 	   {
 	       Session session = HibernateUtil.getSessionFactory().openSession();
 	       Transaction transaction = null;
@@ -137,8 +137,7 @@ public class ProgramType implements Serializable
 	           transaction.commit();
 	        
 	       log.debug("New Training Program Type saved succesfully");
-	       FacesContext context = FacesContext.getCurrentInstance();  
-    	   context.addMessage(null, new FacesMessage("New training program saved succesfully")); 
+	       
 	       }
 	       catch (HibernateException e) 
 	       {
@@ -151,7 +150,7 @@ public class ProgramType implements Serializable
 	       {
 	           session.close();
 	       }
-		return "";
+		
 		
 	   }
 }

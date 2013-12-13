@@ -93,8 +93,8 @@ public void setAllDiaries(HashMap<String, Object> allDiaries) {
 
 
 	//------------------------------------------------------------
-	public void SaveTraining() //method which save new Training 
-	   {
+	public static void SaveTraining(String choosedDiary, String description) //method which save new Training 
+    {
 	       Session session = HibernateUtil.getSessionFactory().openSession();
 	       Transaction transaction = null;
 	       try 
@@ -107,9 +107,7 @@ public void setAllDiaries(HashMap<String, Object> allDiaries) {
 	          session.save(training);
 	           transaction.commit();
 	       log.debug("Records inserted sucessessfully");
-	       FacesContext context = FacesContext.getCurrentInstance();  
-    	   context.addMessage(null, new FacesMessage("Training saved succesfull")); 
-    	   
+	       
 	       } catch (HibernateException e) 
 	       
 	       {
@@ -123,7 +121,7 @@ public void setAllDiaries(HashMap<String, Object> allDiaries) {
 	           session.close();
 	       }
 		
-	   }
+    }
 	
 	public HashMap<String,Object> getLoadDiaries()
 	{

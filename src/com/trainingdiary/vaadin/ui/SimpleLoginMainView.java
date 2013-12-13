@@ -1,10 +1,14 @@
 package com.trainingdiary.vaadin.ui;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 import org.apache.log4j.Logger;
 
 import com.trainingdiary.DiaryBean;
+import com.trainingdiary.ProgramType;
+import com.trainingdiary.Training;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.Sizeable;
@@ -70,7 +74,7 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
   ComboBox selectSecondTab = new ComboBox("Training diaries list");
   Button buttonInSecondTab = new Button("Add new training");
   
-
+  
 //--------------------------------------------
   
 //------------------------------------------- -------------------------------------------Components of ThirdTab
@@ -111,14 +115,19 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
      // setCompositionRoot(new CssLayout(text, logout));  //tutaj w parametrachSetCompositionRoot ustawiamy komponenty jakie maja byc wstawione do widoku, 
     	/*ctb.setVisible(true);
     	ctb.setEnabled(true);*/
-      //---------------------------------------------------------
-    //  HashMap<String, Object> programTypes = programtype.getLoadPrograms();
+
+     Training training = new Training();
+    	
+      ArrayList<Training> trainings = new ArrayList<Training>();
+      trainings = training.LoadTrainings();
 	  
-      select.addItem("test1");
-      select.addItem("test2");
-      select.addItem("test3");
-      select.addItem("test4");
-	  //--------------------------------------------------------- -------------------------------------------Adding components to vertical layout 	
+      for(int i=0; i<trainings.size(); i++)
+      {
+    	  log.debug("Currently loaded training : " + String.valueOf(trainings.get(i)));
+    	  select.addItem(trainings.get(i).getDescription());
+      }
+
+  //--------------------------------------------------------- -------------------------------------------Adding components to vertical layout 	
 	  verticalViewCreateNewDiary.addComponent(textfield);
 	  verticalViewCreateNewDiary.addComponent(datelabel);
   	  verticalViewCreateNewDiary.addComponent(date);
@@ -137,6 +146,19 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 //******************************************************************CREATE ADD NEW TRAINING TAB******************************************************************   	 
 	  HorizontalLayout fittingLayout = new HorizontalLayout();
 	  fittingLayout.addComponent(verticalAddNewTrainingIntoExistingDiary);
+	  
+	  //-----Here we add content to selectSecondTab
+	  	DiaryBean diarybean = new DiaryBean();
+	  	HashMap<String, Object> dzienniki = diarybean.LoadDiaries();
+	  	
+	  	for(int i=0; i<dzienniki.size(); i++)
+	  	{
+	  		selectSecondTab.addItem(dzienniki.get(i));
+	  	}
+	  	
+	  //-----
+	  
+	  
 	  
 	  verticalAddNewTrainingIntoExistingDiary.addComponent(textfieldSecondTab);
 	  verticalAddNewTrainingIntoExistingDiary.addComponent(selectSecondTab);
@@ -232,7 +254,9 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 	  setCompositionRoot(tabsheet);
 	 
 
-	  
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& Button Actions	&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&  
+	 
+//******************************************************************Action of 'Save new diary' button ************************************************	 
 	  button.addClickListener(new Button.ClickListener() 
 	  {
 		private static final long serialVersionUID = 1L;
@@ -263,8 +287,77 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 		  }
 	  }
 	  );
-    	
-    }
+//******************************************************************END OF Action of 'Save new diary' button ************************************************	 
+
+//******************************************************************Action of 'Add new training' button ************************************************	 
+
+	  //buttonInSecondTab
+	  buttonInSecondTab.addClickListener(new Button.ClickListener() 
+	  {
+		private static final long serialVersionUID = 1L;
+		public void buttonClick(ClickEvent event) 
+		  {
+			 try
+			 {
+			
+				  log.debug("Now i'm getting values of fields in UI - Add new training into existing diary tab");
+				  String choosedDiary = String.valueOf(selectSecondTab.getValue());
+				  String description = String.valueOf(textfieldSecondTab.getValue());
+				  
+				  log.debug("Now i try to save date ");
+				  Training.SaveTraining(choosedDiary, description);
+			 }
+			 catch(Exception e)
+			 {
+				 
+				 log.debug("Zapis dziennika nie powiod³ siê");
+				 log.debug(e.getMessage());
+				 e.printStackTrace();
+			 }
+		  
+		  }
+	  }
+	  ); 
+//******************************************************************END OF Action of 'Add new training' button ************************************************	 
+
+
+//******************************************************************Action of 'Add new training program' button ************************************************	 
+
+	  //buttonInSecondTab
+	  buttonInThirdTab.addClickListener(new Button.ClickListener() 
+	  {
+		private static final long serialVersionUID = 1L;
+		public void buttonClick(ClickEvent event) 
+		  {
+			 try
+			 {
+				  log.debug("Now i'm getting values of fields in UI - Add new training type");
+
+				  String programName = "Test";
+				  String programDescription = String.valueOf(textfieldThirdTab.getValue());
+				  String trainingType = String.valueOf(selectThirdTab.getValue());
+				  
+				  log.debug("Now i try to save date ");
+				  ProgramType.SaveProgram(programName, programDescription, trainingType);
+			 }
+			 catch(Exception e)
+			 {
+				 
+				 log.debug("Zapis dziennika nie powiod³ siê");
+				 log.debug(e.getMessage());
+				 e.printStackTrace();
+			 }
+		  
+		  }
+	  }
+	  ); 
+	  
+//******************************************************************END OF Action of 'Add new training program' button ************************************************	 
+
+	  
+	  
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& Button Actions	&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&  
+}
 
     @Override
     public void enter(ViewChangeEvent event) 

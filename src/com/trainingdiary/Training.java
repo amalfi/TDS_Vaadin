@@ -40,7 +40,7 @@ static Logger log = Logger.getLogger(Training.class);
   
   public String description;
   public String choosedDiary;
-  public HashMap<String,Object> allDiaries = new HashMap<String,Object>();
+  public HashMap<String, DiaryBean> allDiaries = new HashMap<String,DiaryBean>();
   public ArrayList<Training> allTrainings = new ArrayList<Training>();
 //------------------------------------------------------------------------------
 /*public Training()
@@ -83,11 +83,11 @@ public void setChoosedDiary(String choosedDiary) {
 	this.choosedDiary = choosedDiary;
 }
 
-public HashMap<String, Object> getAllDiaries() {
+public HashMap<String, DiaryBean> getAllDiaries() {
 	return allDiaries;
 }
 
-public void setAllDiaries(HashMap<String, Object> allDiaries) {
+public void setAllDiaries(HashMap<String, DiaryBean> allDiaries) {
 	this.allDiaries = allDiaries;
 }
 
@@ -123,14 +123,14 @@ public void setAllDiaries(HashMap<String, Object> allDiaries) {
 		
     }
 	
-	public HashMap<String,Object> getLoadDiaries()
+	public HashMap<String,DiaryBean> getLoadDiaries()
 	{
 		allDiaries=LoadDiaries();
 		return allDiaries;
 	}
 	
 	
-	public HashMap<String,Object> LoadDiaries()
+	public HashMap<String,DiaryBean> LoadDiaries()
 	{
 		Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = null;

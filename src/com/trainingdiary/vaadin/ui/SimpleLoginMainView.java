@@ -2,19 +2,20 @@ package com.trainingdiary.vaadin.ui;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 
 import org.apache.log4j.Logger;
 
 import com.trainingdiary.DiaryBean;
 import com.trainingdiary.ProgramType;
 import com.trainingdiary.Training;
+import com.trainingdiary.tools.Actions;
+import com.vaadin.data.Property;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
-import com.vaadin.server.Sizeable;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.DateField;
@@ -87,6 +88,8 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 
 //------------------------------------------- -------------------------------------------Components of FourthTab
   final Table table = new Table();
+  final CheckBox switchEditable = new CheckBox("Editable");
+  Button saveChangesInEditedDiary = new Button("Save changes");
   
 //--------------------------------------------
 //------------------------------------------- -------------------------------------------Components of SeventhTab
@@ -149,12 +152,18 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 	  
 	  //-----Here we add content to selectSecondTab
 	  	DiaryBean diarybean = new DiaryBean();
-	  	HashMap<String, Object> dzienniki = diarybean.LoadDiaries();
+	  	ArrayList<DiaryBean> dzienniki = diarybean.loadDiariesArray();
 	  	
-	  	for(int i=0; i<dzienniki.size(); i++)
+	  	for(int k=0; k<dzienniki.size(); k++)
 	  	{
-	  		selectSecondTab.addItem(dzienniki.get(i));
+	  		selectSecondTab.addItem(String.valueOf(dzienniki.get(k).getNameOfDiary()));
 	  	}
+	  	/*selectSecondTab.addItem("1");
+	  	selectSecondTab.addItem("2");
+	  	selectSecondTab.addItem("3");
+	  	selectSecondTab.addItem("4");
+	  	*/
+	  	
 	  	
 	  //-----
 	  
@@ -182,58 +191,45 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 	
 		
 //******************************************************************EDIT EXSITING DIARY*********************************************************************
-	  
-	/*  
-	//  table.addStyleName("components-inside");
-	   Define the names and data types of columns.
-	  * The "default value" parameter is meaningless here. 
-	  table.addContainerProperty("Sum", Label.class, null);
-	  table.addContainerProperty("Is Transferred", CheckBox.class, null);
-	  table.addContainerProperty("Comments", TextField.class, null);
-	  table.addContainerProperty("Details", Button.class, null);
-	   Add a few items in the table. 
-	  for (int i=0; i<100; i++) 
-	  {
-		// Create the fields for the current table row
-		  Label sumField = new Label(String.format(
-		  "Sum is <b>$%04.2f</b><br/><i>(VAT incl.)</i>",
-		  new Object[] {new Double(Math.random()*1000)}),
-		  Label.CONTENT_XHTML);
-		  CheckBox transferredField = new CheckBox("is transferred");
-		  // Multiline text field. This required modifying the
-		  // height of the table row.
-		  TextField commentsField = new TextField();
-	
-		  // The Table item identifier for the row.
-		  Integer itemId = new Integer(i);
-		  // Create a button and handle its click. A Button does not
-		  // know the item it is contained in, so we have to store the
-		  // item ID as user-defined data.
-		  Button detailsField = new Button("show details");
-		  detailsField.setData(itemId);
-		  detailsField.addClickListener(new Button.ClickListener()
-		  {
-		  
-	    private static final long serialVersionUID = 1L;
-
-		public void buttonClick(ClickEvent event) 
+		/* Define the names and data types of columns.
+		* The "default value" parameter is meaningless here. */
+		table.addContainerProperty("Name", String.class, null);
+		table.addContainerProperty("Date", String.class, null);
+		table.addContainerProperty("Training Program", String.class, null);
+		table.addContainerProperty("Description", String.class, null);
+		
+		
+		
+		for(int j=0; j<dzienniki.size(); j++)
 		{
-		  // Get the item identifier from the user-defined data
-			  Integer iid = (Integer)event.getButton().getData();
-			  Notification.show("Link " +
-			  iid.intValue() + " clicked.");
-	     }
-			  });
-			  detailsField.addStyleName("link");
-			  // Create the table row.
-			  table.addItem(new Object[] {sumField, transferredField,
-			  commentsField, detailsField},
-			  itemId);
-			  }
-			  // Show just three rows because they are so high.
-			  table.setPageLength(3);
-	  }
-*/
+			String nameOfDiary = String.valueOf(dzienniki.get(j).getNameOfDiary());
+			String diaryCreationDate = String.valueOf(dzienniki.get(j).getDiaryCreationDate());
+			String choosedDiary = String.valueOf(dzienniki.get(j).getChoosedTrainingPlan());
+			String diaryDescription =  String.valueOf(dzienniki.get(j).getDiaryDescription());	
+			
+			table.addItem(new Object[] {nameOfDiary, diaryCreationDate , diaryDescription, choosedDiary ,},j);
+		}
+		/*End of adding rows to table*/
+		
+		
+		
+		final CheckBox switchEditable = new CheckBox("Editable");
+		switchEditable.addValueChangeListener(
+		new Property.ValueChangeListener()
+		{
+
+		@Override
+		public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
+			table.setEditable(((Boolean)event.getProperty()
+					.getValue()).booleanValue());
+			
+		}
+		});
+		switchEditable.setImmediate(true);
+		
+		verticalEditExistingTraining.addComponent(switchEditable);
+		verticalEditExistingTraining.addComponent(table);
+		verticalEditExistingTraining.addComponent(saveChangesInEditedDiary);
     
 //******************************************************************END OF EDIT EXSITING DIARY*********************************************************************
 
@@ -261,33 +257,13 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 	  {
 		private static final long serialVersionUID = 1L;
 		public void buttonClick(ClickEvent event) 
-		  {
-			 try
-			 {
-			
-					log.debug("Now i'm getting values of fields in UI");
-				  String sProgramType = String.valueOf(programType.getValue()); //programType
-				  Date dDate = date.getValue(); //diaryCreationDate
-				  String sNameOfTrainingDiary = String.valueOf(textfield.getValue()); //diaryDescription
-				  String sDescription = String.valueOf(area.getValue());
-				  
-				  DiaryBean diary = new DiaryBean();
-				  log.debug("Now i try to save date ");
-				  DiaryBean.SaveDiary(sProgramType, dDate, sDescription, sNameOfTrainingDiary);
-				  
-			 }
-			 catch(Exception e)
-			 {
-				 
-				 log.debug("Zapis dziennika nie powiod³ siê");
-				 log.debug(e.getMessage());
-				 e.printStackTrace();
-			 }
-		  
+		  { 
+			  Actions.SaveNewDiaryAction(button, programType, date, textfield, area);
 		  }
 	  }
 	  );
-//******************************************************************END OF Action of 'Save new diary' button ************************************************	 
+
+ //******************************************************************END OF Action of 'Save new diary' button ************************************************	 
 
 //******************************************************************Action of 'Add new training' button ************************************************	 
 
@@ -365,7 +341,7 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
     	tabsheet.addTab(verticalViewCreateNewDiary).setCaption("Create new Diary");
     	tabsheet.addTab(verticalAddNewTrainingIntoExistingDiary).setCaption("Add new training session into existing diary");
     	tabsheet.addTab(verticalAddNewTrainingProgram).setCaption("Add new training program");
-    	tabsheet.addTab(label4).setCaption("Edit existing diary");
+    	tabsheet.addTab(verticalEditExistingTraining).setCaption("Edit existing diary");
     	tabsheet.addTab(label5).setCaption("Edit existing training");
     	tabsheet.addTab(logoutLayout).setCaption("Logout");
     	

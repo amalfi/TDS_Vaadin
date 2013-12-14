@@ -1,6 +1,7 @@
 package com.trainingdiary;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -36,7 +37,7 @@ public class DiaryBean implements Serializable
 	private Date diaryCreationDate;
 	private String diaryDescription;
 	private String choosedTrainingPlan;
-    public HashMap<String,Object> allDiaries = new HashMap<String,Object>();
+    public static HashMap<String, DiaryBean> allDiaries = new HashMap<String,DiaryBean>();
     public String choosedDiary;
     boolean editable;
     
@@ -97,11 +98,11 @@ public class DiaryBean implements Serializable
 		this.choosedTrainingPlan = choosedTrainingPlan;
 	}
 	
-	public HashMap<String, Object> getAllDiaries() {
+	public HashMap<String, DiaryBean> getAllDiaries() {
 		return allDiaries;
 	}
 
-	public void setAllDiaries(HashMap<String, Object> allDiaries) {
+	public void setAllDiaries(HashMap<String, DiaryBean> allDiaries) {
 		this.allDiaries = allDiaries;
 	}
 	
@@ -194,14 +195,14 @@ public class DiaryBean implements Serializable
 	   }
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-		public HashMap<String,Object> getLoadDiaries()
+		public HashMap<String,DiaryBean> getLoadDiaries()
 		{
 			allDiaries=LoadDiaries();
 			return allDiaries;
 		}
 	  
 	  
-		public HashMap<String,Object> LoadDiaries()
+		public static HashMap<String, DiaryBean> LoadDiaries()
 		{
 			Session session = HibernateUtil.getSessionFactory().openSession();
 	        Transaction transaction = null;
@@ -209,12 +210,14 @@ public class DiaryBean implements Serializable
 	        { 
 	            transaction = session.beginTransaction();
 	            List programtypes = session.createQuery("from DiaryBean").list(); //is worth to remember (common mistake) - when you use want to select from table, use bean name, not table name
+	            int i=0;
 	            for (Iterator iterator = programtypes.iterator(); iterator.hasNext();)
 	            {
 	                DiaryBean diary = (DiaryBean) iterator.next();
-	                allDiaries.put(diary.getNameOfDiary().toString(), diary);
+	                allDiaries.put(String.valueOf(i), diary);
 	              
 	                log.debug("Currently loaded diary "+ diary.getNameOfDiary().toString());
+	                i++;
 	            }          	
 	            transaction.commit();
 	        } 
@@ -230,10 +233,46 @@ public class DiaryBean implements Serializable
 	        }
 			return allDiaries;
 		}
+//------------------------------------------------------------------------------------------------------------------
+		public ArrayList<DiaryBean> loadDiariesArray()
+		{
+			ArrayList<DiaryBean> diariesArrayList =  new ArrayList<DiaryBean>();
+			
 
+			Session session = HibernateUtil.getSessionFactory().openSession();
+	        Transaction transaction = null;
+	        try 
+	        { 
+	            transaction = session.beginTransaction();
+	            List programtypes = session.createQuery("from DiaryBean").list(); //is worth to remember (common mistake) - when you use want to select from table, use bean name, not table name
+	            int i=0;
+	            for (Iterator iterator = programtypes.iterator(); iterator.hasNext();)
+	            {
+	                DiaryBean diary = (DiaryBean) iterator.next();
+	                diariesArrayList.add(diary);
+	              
+	                log.debug("Currently loaded diary "+ diary.getNameOfDiary().toString());
+	                i++;
+	            }          	
+	            transaction.commit();
+	        } 
+	        catch (HibernateException e) 
+	        {
+	            transaction.rollback();
+	            e.printStackTrace();  
+	            log.debug(e.getMessage());
+	        } 
+	        finally 
+	        {
+	            session.close();
+	        }
+			
+			return diariesArrayList;
+			
+		}
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 		//getChoosedTrainingDiaryProperties
-		public HashMap<String,Object> getChoosedTrainingDiaryProperties()
+		public HashMap<String,DiaryBean> getChoosedTrainingDiaryProperties()
 		{
 			Session session = HibernateUtil.getSessionFactory().openSession();
 	        Transaction transaction = null;

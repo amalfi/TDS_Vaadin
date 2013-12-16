@@ -172,10 +172,13 @@ public class DiaryBean implements Serializable
     		  { 
 	           session.save(diaryBean);
 	           transaction.commit();
+	           log.debug("Diary created succesfully");
     		  }
-	       log.debug("Diary created succesfully");
+	          else
+	          {
+	        	  
+	          }
 
-  
 			
 	       } 
 	       catch (HibernateException e) 

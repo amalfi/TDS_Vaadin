@@ -6,21 +6,19 @@ import org.apache.log4j.Logger;
 
 import com.trainingdiary.DiaryBean;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.DateField;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.RichTextArea;
-import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 
-public class Actions extends CustomComponent
+public class ButtonActions extends CustomComponent
 {
 
 	private static final long serialVersionUID = 1L;
-	static Logger log = Logger.getLogger(Actions.class);
+	static Logger log = Logger.getLogger(ButtonActions.class);
 	
-	public static void SaveNewDiaryAction(Button button,  final Label programType, final DateField date, final TextField textfield, final RichTextArea area )
+	public static void SaveNewDiaryAction(Button button,  final ComboBox programType, final DateField date, final TextField textfield, final RichTextArea area )
 	{
 				 try
 				 {
@@ -40,5 +38,28 @@ public class Actions extends CustomComponent
 					 log.debug(e.getMessage());
 					 e.printStackTrace();
 				 }
-			  }
+	  }
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	  public static boolean SaveChangesInExistingDiary()
+	  {
+		  boolean status;
+		  try
+			 {
+				  log.debug("Now i'm getting values of fields in UI - Add new training type");
+
+				  
+				  DiaryBean.SaveDiary(programType, diaryCreationDate, diaryDescription, nameOfDiary);
+				 
+			 }
+			 catch(Exception e)
+			 {
+				 
+				 log.debug("Zapis dziennika nie powiod³ siê");
+				 log.debug(e.getMessage());
+				 e.printStackTrace();
+			 }
+		  return status;
+	  }*/
+	
 }

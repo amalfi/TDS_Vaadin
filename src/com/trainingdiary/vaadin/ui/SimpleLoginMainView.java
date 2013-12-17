@@ -26,6 +26,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.RichTextArea;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
@@ -100,9 +101,15 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
   final Table table = new Table();
   final CheckBox switchEditable = new CheckBox("Editable");
   Button saveChangesInEditedDiary = new Button("Save changes");
-  
-//--------------------------------------------
-//------------------------------------------- -------------------------------------------Components of SeventhTab
+ 
+//------------------------------------------- -------------------------------------------Components of FifthTab
+  	
+  final Table tableEditTraining = new Table();
+  final CheckBox switchEditableTrainingTable = new CheckBox("Editable");
+  Button saveChangesInEditedTraining = new Button("Save changes");
+   
+
+//------------------------------------------- -------------------------------------------Components of SixsthTab
   Button logoutButton = new Button("Logout", new Button.ClickListener() 
   {
 
@@ -182,20 +189,15 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 	  	{
 	  		selectSecondTab.addItem(String.valueOf(dzienniki.get(k).getNameOfDiary()));
 	  	}
-	  	/*selectSecondTab.addItem("1");
-	  	selectSecondTab.addItem("2");
-	  	selectSecondTab.addItem("3");
-	  	selectSecondTab.addItem("4");
-	  	*/
-	  	
-	  	
-	  //-----
-	  
-	  
 	  
 	  verticalAddNewTrainingIntoExistingDiary.addComponent(textfieldSecondTab);
+	  verticalAddNewTrainingIntoExistingDiary.setComponentAlignment(textfieldSecondTab, Alignment.MIDDLE_CENTER);
+	  
 	  verticalAddNewTrainingIntoExistingDiary.addComponent(selectSecondTab);
+	  verticalAddNewTrainingIntoExistingDiary.setComponentAlignment(selectSecondTab, Alignment.MIDDLE_CENTER);
+	  
 	  verticalAddNewTrainingIntoExistingDiary.addComponent(buttonInSecondTab);
+	  verticalAddNewTrainingIntoExistingDiary.setComponentAlignment(buttonInSecondTab, Alignment.MIDDLE_CENTER);
 	  
 //******************************************************************END OF CREATE NEW DIARY TAB******************************************************************   	 
 
@@ -256,7 +258,42 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 		editExistingDiary.addComponent(saveChangesInEditedDiary);
     
 //******************************************************************END OF EDIT EXSITING DIARY*********************************************************************
+		tableEditTraining.addContainerProperty("Name", String.class, null);
+		tableEditTraining.addContainerProperty("Date", String.class, null);
+		tableEditTraining.addContainerProperty("Training Program", String.class, null);
+		tableEditTraining.addContainerProperty("Description", String.class, null);
+		
+		for(int j=0; j<dzienniki.size(); j++)
+		{
+			String nameOfDiary = String.valueOf(dzienniki.get(j).getNameOfDiary());
+			String diaryCreationDate = String.valueOf(dzienniki.get(j).getDiaryCreationDate());
+			String choosedDiary = String.valueOf(dzienniki.get(j).getChoosedTrainingPlan());
+			String diaryDescription =  String.valueOf(dzienniki.get(j).getDiaryDescription());	
+			
+			table.addItem(new Object[] {nameOfDiary, diaryCreationDate , diaryDescription, choosedDiary ,},j);
+		}
+		/*End of adding rows to table*/
+		
+	
+		
+		final CheckBox switchEditablCheckBoxe = new CheckBox("Editable");
+		this.switchEditable.addValueChangeListener(
+		new Property.ValueChangeListener()
+		{
+			private static final long serialVersionUID = 1L;
 
+		@Override
+		public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
+			tableEditTraining.setEditable(((Boolean)event.getProperty()
+					.getValue()).booleanValue());
+			
+		}
+		});
+		switchEditable.setImmediate(true);
+		
+		 verticalEditExistingTraining.addComponent(switchEditableTrainingTable);
+		 verticalEditExistingTraining.addComponent(tableEditTraining);
+		 verticalEditExistingTraining.addComponent(saveChangesInEditedTraining);
 		
 //******************************************************************EDIT EXSITING TRAINING*********************************************************************
 
@@ -265,15 +302,10 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 //******************************************************************END OF EDIT EXSITING TRAINING********************************************************************
 
 //******************************************************************LOGOUT*********************************************************************
-		
 		logoutLayout.addComponent(logoutButton);
-
+		logoutLayout.setComponentAlignment(logoutButton, Alignment.MIDDLE_CENTER);
 //******************************************************************END OF LOGOUT*********************************************************************
-
-		
 	  setCompositionRoot(tabsheet);
-	 
-
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& Button Actions	&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&  
 	 
 //******************************************************************Action of 'Save new diary' button ************************************************	 
@@ -287,72 +319,34 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 	  }
 	  );
 
- //******************************************************************END OF Action of 'Save new diary' button ************************************************	 
-
+//******************************************************************END OF Action of 'Save new diary' button ************************************************	 
 //******************************************************************Action of 'Add new training' button ************************************************	 
-
 	  //buttonInSecondTab
 	  buttonInSecondTab.addClickListener(new Button.ClickListener() 
 	  {
 		private static final long serialVersionUID = 1L;
 		public void buttonClick(ClickEvent event) 
 		  {
-			 try
-			 {
-			
-				  log.debug("Now i'm getting values of fields in UI - Add new training into existing diary tab");
-				  String choosedDiary = String.valueOf(selectSecondTab.getValue());
-				  String description = String.valueOf(textfieldSecondTab.getValue());
-				  
-				  log.debug("Now i try to save date ");
-				  Training.SaveTraining(choosedDiary, description);
-			 }
-			 catch(Exception e)
-			 {
-				 
-				 log.debug("Zapis dziennika nie powiod³ siê");
-				 log.debug(e.getMessage());
-				 e.printStackTrace();
-			 }
-		  
+			  ButtonActions.SaveNewTrainingIntoExistingDiaryAction(selectSecondTab, textfieldSecondTab);
 		  }
 	  }
 	  ); 
 //******************************************************************END OF Action of 'Add new training' button ************************************************	 
-
-
 //******************************************************************Action of 'Add new training program' button ************************************************	 
 
 	  //buttonInSecondTab
 	  buttonInThirdTab.addClickListener(new Button.ClickListener()
       {
-             private static final long serialVersionUID = 1L;
-             public void buttonClick(ClickEvent event)
+            
+		  private static final long serialVersionUID = 1L;
+          public void buttonClick(ClickEvent event)
               {
-                      try
-                      {
-                              log.debug("Now i'm getting values of fields in UI - Add new training type");
-
-                              String programName = "Test";
-                              String programDescription = String.valueOf(textfieldThirdTab.getValue());
-                              String trainingType = String.valueOf(selectThirdTab.getValue());
-                             
-                              log.debug("Now i try to save date ");
-                              ProgramType.SaveProgram(programName, programDescription, trainingType);
-                      }
-                      catch(Exception e)
-                      {
-                             
-                              log.debug("Zapis dziennika nie powiodl sie");
-                              log.debug(e.getMessage());
-                              e.printStackTrace();
-                      }
+                 ButtonActions.SaveNewTrainingType(textfieldThirdTab, selectThirdTab);    
               }
       }
       ); 
 	  
 //******************************************************************END OF Action of 'Add new training program' button ************************************************	 
-
 //******************************************************************Action of 'Save changes' (Edit existing diary) button ************************************************	 
 
 	  saveChangesInEditedDiary.addClickListener(new Button.ClickListener() 
@@ -365,9 +359,7 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 	  }
 	  ); 
 	  
-//******************************************************************END OF Action of 'Save changes' (Edit existing diary) button ************************************************	 
-	  
-	  
+//******************************************************************END OF Action of 'Save changes' (Edit existing diary) button ************************************************	 	  
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& Button Actions	&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&  
 }
 
@@ -375,25 +367,21 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
     public void enter(ViewChangeEvent event) 
     {
     	
-    	verticalViewCreateNewDiarySplitPanel.setVisible(true);
     	verticalViewCreateNewDiarySplitPanel.addComponent(verticalViewCreateNewDiary);
-    	//verticalViewCreateNewDiary.addComponent(verticalViewCreateNewDiarySplitPanel);
-    	/*
-    	verticalViewCreateNewDiary.addComponent(verticalViewCreateNewDiarySplitPanel);
-    	verticalAddNewTrainingIntoExistingDiary.addComponent(verticalAddNewTrainingIntoExistingDiarySplitPanel);
-    	verticalAddNewTrainingProgram.addComponent(verticalAddNewTrainingProgramSplitPanel);
-    	editExistingDiary.addComponent(editExistingDiarySplitPanel);
-    	verticalEditExistingTraining.addComponent(verticalEditExistingTrainingSplitPanel);
-    	*/
+    	verticalAddNewTrainingIntoExistingDiarySplitPanel.addComponent(verticalAddNewTrainingIntoExistingDiary);
+    	verticalAddNewTrainingProgramSplitPanel.addComponent(verticalAddNewTrainingProgram);
+    	editExistingDiarySplitPanel.addComponent(editExistingDiary);
+    	verticalEditExistingTrainingSplitPanel.addComponent(verticalEditExistingTraining);
+    	
     	//--------------------------------------------------------------------------------------------------------
     	
     	
     	tabsheet.addTab(verticalViewCreateNewDiarySplitPanel).setCaption("Create new Diary");
-    	tabsheet.addTab(verticalAddNewTrainingIntoExistingDiary).setCaption("Add new training session into existing diary");
-    	tabsheet.addTab(verticalAddNewTrainingProgram).setCaption("Add new training program");
-    	tabsheet.addTab(editExistingDiary).setCaption("Edit existing diary");
-    	tabsheet.addTab(verticalEditExistingTraining).setCaption("Edit existing training");
-    	tabsheet.addTab(logoutLayout).setCaption("Logout");
+    	tabsheet.addTab(verticalAddNewTrainingIntoExistingDiarySplitPanel).setCaption("Add new training session into existing diary");
+    	tabsheet.addTab(verticalAddNewTrainingProgramSplitPanel).setCaption("Add new training program");
+    	tabsheet.addTab(editExistingDiarySplitPanel).setCaption("Edit existing diary");
+    	tabsheet.addTab(verticalEditExistingTrainingSplitPanel).setCaption("Edit existing training");
+    	tabsheet.addTab(logoutLayout).setCaption("My account");
     	
         // Get the user name from the session
         //String username = String.valueOf(getSession().getAttribute("user"));

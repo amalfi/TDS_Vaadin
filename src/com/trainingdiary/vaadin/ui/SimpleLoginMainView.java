@@ -129,7 +129,8 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
   
 //--------------------------------------------
   
-    public SimpleLoginMainView()  //here we can add action listeners etc
+    @SuppressWarnings("static-access")
+	public SimpleLoginMainView()  //here we can add action listeners etc
     {
 //******************************************************************CREATE NEW DIARY TAB******************************************************************   	 
      // setCompositionRoot(new CssLayout(text, logout));  //tutaj w parametrachSetCompositionRoot ustawiamy komponenty jakie maja byc wstawione do widoku, 
@@ -236,21 +237,23 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 			table.addItem(new Object[] {nameOfDiary, diaryCreationDate , diaryDescription, choosedDiary ,},j);
 		}
 		/*End of adding rows to table*/
-		
-	
-		
-		final CheckBox switchEditable = new CheckBox("Editable");
-		switchEditable.addValueChangeListener(
-		new Property.ValueChangeListener()
-		{
 
-		@Override
-		public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
-			table.setEditable(((Boolean)event.getProperty()
+		final CheckBox switchEditable = new CheckBox("Editable");
+		
+		switchEditable.addValueChangeListener
+		(
+			new Property.ValueChangeListener()
+			{
+				private static final long serialVersionUID = 1L;
+	
+					@Override
+					public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) 
+					{
+					table.setEditable(((Boolean)event.getProperty()
 					.getValue()).booleanValue());
-			
-		}
-		});
+					}
+			}
+		);
 		switchEditable.setImmediate(true);
 		
 		editExistingDiary.addComponent(switchEditable);
@@ -258,26 +261,24 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 		editExistingDiary.addComponent(saveChangesInEditedDiary);
     
 //******************************************************************END OF EDIT EXSITING DIARY*********************************************************************
-		tableEditTraining.addContainerProperty("Name", String.class, null);
-		tableEditTraining.addContainerProperty("Date", String.class, null);
-		tableEditTraining.addContainerProperty("Training Program", String.class, null);
 		tableEditTraining.addContainerProperty("Description", String.class, null);
+		tableEditTraining.addContainerProperty("Choosed Diary", String.class, null);
 		
-		for(int j=0; j<dzienniki.size(); j++)
+		ArrayList<Training>treningi = Training.LoadTrainings();		
+		
+		for(int j=0; j<treningi.size(); j++)
 		{
-			String nameOfDiary = String.valueOf(dzienniki.get(j).getNameOfDiary());
-			String diaryCreationDate = String.valueOf(dzienniki.get(j).getDiaryCreationDate());
-			String choosedDiary = String.valueOf(dzienniki.get(j).getChoosedTrainingPlan());
-			String diaryDescription =  String.valueOf(dzienniki.get(j).getDiaryDescription());	
-			
-			table.addItem(new Object[] {nameOfDiary, diaryCreationDate , diaryDescription, choosedDiary ,},j);
+			String description = String.valueOf(treningi.get(j).getDescription());
+			String choosedDiary = String.valueOf(treningi.get(j).getChoosedDiary());
+
+			tableEditTraining.addItem(new Object[] {description, choosedDiary},j);
 		}
 		/*End of adding rows to table*/
 		
 	
 		
-		final CheckBox switchEditablCheckBoxe = new CheckBox("Editable");
-		this.switchEditable.addValueChangeListener(
+		final CheckBox switchEditableTrainingTable = new CheckBox("Editable");
+		this.switchEditableTrainingTable.addValueChangeListener(
 		new Property.ValueChangeListener()
 		{
 			private static final long serialVersionUID = 1L;

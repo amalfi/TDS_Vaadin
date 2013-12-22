@@ -32,11 +32,18 @@ public class SimpleLoginUI extends UI {
         // Add the main view of the application
         //
         getNavigator().addView(SimpleLoginMainView.NAME, SimpleLoginMainView.class);
-                       
+         
+        
+
         //
         // We use a view change handler to ensure the user is always redirected
         // to the login view if the user is not logged in.
         //
+        
+        //---------------------------------------------------------------------------
+        
+        //---------------------------------------------------------------------------
+        
         getNavigator().addViewChangeListener(new ViewChangeListener() {
             
             public boolean beforeViewChange(ViewChangeEvent event) {

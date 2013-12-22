@@ -41,7 +41,7 @@ static Logger log = Logger.getLogger(Training.class);
   public String description;
   public String choosedDiary;
   public HashMap<String, DiaryBean> allDiaries = new HashMap<String,DiaryBean>();
-  public ArrayList<Training> allTrainings = new ArrayList<Training>();
+  public static ArrayList<Training> allTrainings = new ArrayList<Training>();
 //------------------------------------------------------------------------------
 /*public Training()
 {
@@ -165,7 +165,7 @@ public void setAllDiaries(HashMap<String, DiaryBean> allDiaries) {
 		return allTrainings;
 	}
 	
-	public ArrayList<Training> LoadTrainings()
+	public static ArrayList<Training> LoadTrainings()
 	{
 		Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = null;

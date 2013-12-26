@@ -21,6 +21,7 @@ import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.PasswordField;
+import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -42,6 +43,8 @@ public class SimpleLoginView extends CustomComponent implements View, Button.Cli
 
     private final Button loginButton;
     
+    public static String currentLoadedUser;
+    
    // Button createnewAccountButton;
     final Window window = new Window("Window");
     
@@ -61,8 +64,8 @@ public class SimpleLoginView extends CustomComponent implements View, Button.Cli
 			public void buttonClick(ClickEvent event) 
 			{
 				CreateNewAccountPopup.AddComponentToPopup(window);
-	
 				UI.getCurrent().addWindow(window);
+				
     	    }
     	});
         
@@ -85,7 +88,7 @@ public class SimpleLoginView extends CustomComponent implements View, Button.Cli
         // Create login button
         loginButton = new Button("Login", this);
         
-        
+        	
         
         Label new_user_label = new Label("Didnt have account yet ? Please button below to register");
        
@@ -169,6 +172,7 @@ public class SimpleLoginView extends CustomComponent implements View, Button.Cli
 	        }
 	
 	        String username = user.getValue();
+	        currentLoadedUser = user.getValue();
 	        String password = this.password.getValue();
 	
 	         //

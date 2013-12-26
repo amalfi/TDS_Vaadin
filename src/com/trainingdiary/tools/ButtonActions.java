@@ -87,7 +87,6 @@ public class ButtonActions extends CustomComponent
 	}
 	
 	
-	
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	  public static boolean SaveChangesInExistingDiary()

@@ -35,7 +35,7 @@ public class User implements Serializable
    
    public String name;
    public String password;
-
+   
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Column(columnDefinition = "MEDIUMINT NOT NULL AUTO_INCREMENT")
@@ -159,37 +159,79 @@ public class User implements Serializable
 	   return "user-panel";
    }
    */
-   public String SaveUser() //method which save  new User 
+   public static String SaveUser(String name, String password) //method which save  new User 
    {
        Session session = HibernateUtil.getSessionFactory().openSession();
        Transaction transaction = null;
-       try 
+      
+       if (checkIfUserAlreadyExist(name, session, transaction)==false)
+       {   
+	       try 
+	       {
+	       log.debug("Session.beginTransaction process started");   
+	          transaction = session.beginTransaction();
+	          User user = new User();
+	          user.setName(name);
+			  user.setPassword(password);
+	          
+	          session.save(user);
+	           transaction.commit();
+	       log.debug("Records inserted sucessessfully");
+	       } catch (HibernateException e) 
+	       
+	       {
+	           transaction.rollback();
+	           e.printStackTrace();
+	           log.debug(e.getMessage());
+	       } 
+	       
+	       finally 
+	       {
+	           session.close();
+	       }
+       }
+       else
        {
-       log.debug("Session.beginTransaction process started");   
-          transaction = session.beginTransaction();
-          User user = new User();
-          user.setName(name);
-		  user.setPassword(password);
+    	   return "Exist";
+       }
+		return "";
+		  
+		
+   }
+  
+   public static boolean checkIfUserAlreadyExist(String name, Session session, Transaction transaction)
+   {
+	   boolean exist = false;
+	 
+	   try 
+       {
+        List checkingList = session.createQuery("from User").list(); //is worth to remember (common mistake) - when you use want to select from table, use bean name, not table name
+        for (Iterator iterator = checkingList.iterator(); iterator.hasNext();)
+        {
+          if(exist==false)
+          	{
+        	User user = (User) iterator.next();
+             		String currentname=String.valueOf(user.getName());
+        			 if(currentname.equals(name))
+            		 {
+            	 		 log.debug("W bazie znaleziono juz uzytkownika o istniejacym loginie" + name);
+        				 exist=true;	
+            		 }
+          	}
           
-          session.save(user);
-           transaction.commit();
-       log.debug("Records inserted sucessessfully");
-       } catch (HibernateException e) 
-       
+         }          	
+       } 
+	
+	   catch (HibernateException e)
        {
            transaction.rollback();
            e.printStackTrace();
            log.debug(e.getMessage());
        } 
-       
-       finally 
-       {
-           session.close();
-       }
-	return "";
-		  
-		
+	
+	
+	   return exist;
+	   
    }
-   
  
 }

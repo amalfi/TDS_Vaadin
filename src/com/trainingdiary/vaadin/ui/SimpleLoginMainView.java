@@ -367,12 +367,33 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
     @Override
     public void enter(ViewChangeEvent event) 
     {
+    	UserProfile usp = new UserProfile();
+    	UserProfile usp2 = new UserProfile();
+    	UserProfile usp3 = new UserProfile();
+    	UserProfile usp4 = new UserProfile();
+    	UserProfile usp5 = new UserProfile();
     	
+    	
+    	verticalViewCreateNewDiarySplitPanel.setLocked(true);
     	verticalViewCreateNewDiarySplitPanel.addComponent(verticalViewCreateNewDiary);
+    	verticalViewCreateNewDiarySplitPanel.addComponent(usp);
+    	
+    	verticalAddNewTrainingIntoExistingDiarySplitPanel.setLocked(true);
     	verticalAddNewTrainingIntoExistingDiarySplitPanel.addComponent(verticalAddNewTrainingIntoExistingDiary);
+    	verticalAddNewTrainingIntoExistingDiarySplitPanel.addComponent(usp2);
+    	
+    	verticalAddNewTrainingProgramSplitPanel.setLocked(true);
     	verticalAddNewTrainingProgramSplitPanel.addComponent(verticalAddNewTrainingProgram);
+    	verticalAddNewTrainingProgramSplitPanel.addComponent(usp3);
+    	
+    	editExistingDiarySplitPanel.setLocked(true);
     	editExistingDiarySplitPanel.addComponent(editExistingDiary);
+    	editExistingDiarySplitPanel.addComponent(usp4);
+    	
+    	
+    	verticalEditExistingTrainingSplitPanel.setLocked(true);
     	verticalEditExistingTrainingSplitPanel.addComponent(verticalEditExistingTraining);
+    	verticalEditExistingTrainingSplitPanel.addComponent(usp5);
     	
     	//--------------------------------------------------------------------------------------------------------
     	

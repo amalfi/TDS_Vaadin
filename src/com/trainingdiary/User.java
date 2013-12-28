@@ -1,6 +1,7 @@
 package com.trainingdiary;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -17,10 +18,12 @@ import javax.persistence.Id;
 
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import com.trainingdiary.database.HibernateUtil;
+import com.trainingdiary.vaadin.ui.SimpleLoginView;
 
 
 @javax.persistence.Entity
@@ -36,10 +39,39 @@ public class User implements Serializable
    public String name;
    public String password;
    
+   public String lastLoginTime; 
+   
+
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Column(columnDefinition = "MEDIUMINT NOT NULL AUTO_INCREMENT")
    public Integer id;
+
+
+
+	public static String getsUserName() {
+		return sUserName;
+	}
+	
+	public static void setsUserName(String sUserName) {
+		User.sUserName = sUserName;
+	}
+	
+	public static String getsUserPassword() {
+		return sUserPassword;
+	}
+	
+	public static void setsUserPassword(String sUserPassword) {
+		User.sUserPassword = sUserPassword;
+	}
+	
+	public String getLastLoginTime() {
+		return lastLoginTime;
+	}
+	
+	public void setLastLoginTime(String lastLoginTime) {
+		this.lastLoginTime = lastLoginTime;
+	}
 
    public Integer getId() 
    {
@@ -194,11 +226,56 @@ public class User implements Serializable
        {
     	   return "Exist";
        }
-		return "";
-		  
-		
+		return "";	
    }
   
+   public static String saveUserLoginTime(String string)
+   {
+	   Session session = HibernateUtil.getSessionFactory().openSession();
+       Transaction transaction = null;
+
+       try 
+       {
+       log.debug("Session.beginTransaction process started");   
+          transaction = session.beginTransaction();
+          User user = new User();
+          //
+          String currentUser = SimpleLoginView.currentLoadedUser;
+          Query query = session.createQuery("from User where name = :user_name" );
+          query.setParameter("user_name", currentUser);
+
+          List<?> list = query.list();
+
+          User userid = (User)list.get(0);
+          
+     /*     user.setId(userid.getId());
+          user.setLastLoginTime(string);
+     */     
+          Query updateQuery =  session.createSQLQuery("update User set lastLoginTime= :"+string+" where id= :"+userid.getId()+"");
+	          updateQuery.setParameter("lastlogin", string);
+	          updateQuery.setParameter("userid", userid.getId());
+          updateQuery.executeUpdate();
+          
+          // session.saveOrUpdate(user);
+           transaction.commit();
+       log.debug("Records inserted sucessessfully");
+       }
+       catch (HibernateException e) 
+       {
+    	   transaction.rollback();
+           e.printStackTrace();
+           log.debug(e.getMessage());
+       } 
+       
+       finally 
+       {
+           session.close();
+       }
+       
+	return "";
+	   
+   }
+   
    public static boolean checkIfUserAlreadyExist(String name, Session session, Transaction transaction)
    {
 	   boolean exist = false;

@@ -19,10 +19,13 @@ import javax.persistence.Id;
 
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import com.trainingdiary.database.HibernateUtil;
+import com.trainingdiary.vaadin.ui.SimpleLoginView;
+import com.vaadin.ui.Notification;
 
 
 @javax.persistence.Entity
@@ -38,10 +41,21 @@ public class DiaryBean implements Serializable
 	private String diaryDescription;
 	private String choosedTrainingPlan;
     public static HashMap<String, DiaryBean> allDiaries = new HashMap<String,DiaryBean>();
+    public static HashMap<String, DiaryBean> currentDiaries = new HashMap<String,DiaryBean>();
     public String choosedDiary;
     boolean editable;
+    private String currentDiaryUser;
     
-  //---------------------------------------------------------
+    
+
+	public static HashMap<String, DiaryBean> getCurrentDiaries() {
+		return currentDiaries;
+	}
+	public static void setCurrentDiaries(HashMap<String, DiaryBean> currentDiaries) {
+		DiaryBean.currentDiaries = currentDiaries;
+	}
+
+	//---------------------------------------------------------
 //Lists of diaries properties 
     private List<DiaryBean> diaryDescriptions;
 
@@ -64,6 +78,15 @@ public class DiaryBean implements Serializable
 	public void setId(Integer id) {
 		this.id = id;
 	}
+	
+    
+	public String getCurrentDiaryUser() {
+		return currentDiaryUser;
+	}
+	public void setCurrentDiaryUser(String currentDiaryUser) {
+		this.currentDiaryUser = currentDiaryUser;
+	}
+
 	
 	public String getChoosedDiary() {
 		return choosedDiary;
@@ -164,7 +187,7 @@ public class DiaryBean implements Serializable
 	          diaryBean.setDiaryCreationDate(diaryCreationDate);
 	          diaryBean.setDiaryDescription(diaryDescription);
 	          diaryBean.setNameOfDiary(nameOfDiary);
-	         
+	          diaryBean.setCurrentDiaryUser(String.valueOf(SimpleLoginView.currentLoadedUser));
 	          //-------------------------------------------------------------
 	          log.debug("Sprawdzam czy dziennik o danej nazwie juz istnieje");
 	          //-------------------------------------------------------------
@@ -176,7 +199,7 @@ public class DiaryBean implements Serializable
     		  }
 	          else
 	          {
-	        	  
+	        	  Notification.show("Error","Diary with this name already exist",Notification.Type.WARNING_MESSAGE);	
 	          }
 
 			
@@ -304,7 +327,48 @@ public class DiaryBean implements Serializable
 			return allDiaries;
 		}
 		
-	
-	    
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+		public static HashMap<String, DiaryBean> getDiariesForCurrentUser()
+		{
+			Session session = HibernateUtil.getSessionFactory().openSession();
+	        Transaction transaction = null;
+	        String diaries="";
+	        String currentUser= SimpleLoginView.currentLoadedUser;
+	        try 
+	        { 
+	            transaction = session.beginTransaction();
+
+	           /* Query query = session.createQuery("from DiaryBean where currentdiaryuser = :currentuser");
+	            query.setParameter("currentuser", currentUser);
+	            List list = query.list();
+	            
+	            diaries=String.valueOf(list.get(0));*/
+	            
+	            List currentdiaries = session.createQuery("from DiaryBean where currentdiaryuser = :currentuser").setParameter("currentuser", currentUser).list(); //is worth to remember (common mistake) - when you use want to select from table, use bean name, not table name
+	            for (Iterator iterator = currentdiaries.iterator(); iterator.hasNext();)
+	            {
+	                DiaryBean diary = (DiaryBean) iterator.next();
+	                currentDiaries.put(diary.getNameOfDiary().toString(), diary);
+	                log.debug("Currently loaded diary "+ diary.getNameOfDiary().toString());
+	            }          	
+	            
+	            
+	            log.debug("Dzienniki dla aktualnie zalogowanego usera pobrano poprawnie");
+	            transaction.commit();
+	        } 
+	        catch (HibernateException e) 
+	        {
+	            transaction.rollback();
+	            e.printStackTrace();  
+	            log.debug(e.getMessage());
+	        } 
+	        finally 
+	        {
+	            session.close();
+	        }
+	        
+			return currentDiaries;
+		}
+
 }
                     

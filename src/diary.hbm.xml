@@ -30,6 +30,9 @@
 			<column name="choosedTrainingPlan" />
 		</property>
 		
+		<property name="currentDiaryUser">
+			<column name="currentDiaryUser" />
+		</property>
 			
 	</class>
 

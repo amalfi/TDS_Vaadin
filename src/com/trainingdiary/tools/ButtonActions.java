@@ -87,27 +87,6 @@ public class ButtonActions extends CustomComponent
 	}
 	
 	
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	/*
-	  public static boolean SaveChangesInExistingDiary()
-	  {
-		  boolean status;
-		  try
-			 {
-				  log.debug("Now i'm getting values of fields in UI - Add new training type");
 
-				  
-				  DiaryBean.SaveDiary(programType, diaryCreationDate, diaryDescription, nameOfDiary);
-				 
-			 }
-			 catch(Exception e)
-			 {
-				 
-				 log.debug("Zapis dziennika nie powiod³ siê");
-				 log.debug(e.getMessage());
-				 e.printStackTrace();
-			 }
-		  return status;
-	  }*/
 	
 }

@@ -1,5 +1,9 @@
 package com.trainingdiary.vaadin.ui;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 import org.apache.log4j.Logger;
 
 import com.google.gwt.user.client.ui.VerticalSplitPanel;
@@ -187,6 +191,13 @@ public class SimpleLoginView extends CustomComponent implements View, Button.Cli
 	        if (isValid==true)
 	        {
 	        	log.debug("Login process succeed");
+	        	//------------------------------------------------------------------Here we set 'last Login time'
+	        	DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+	        	Calendar cal = Calendar.getInstance();
+	        	
+	        	User.saveUserLoginTime(dateFormat.format(cal.getTime()));
+	      		log.debug("User current login date setting correctly");
+	        	//-----------------------------------------------------------------
 	        }
 	        else if (isValid==false)
 	        {

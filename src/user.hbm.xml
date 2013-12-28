@@ -22,6 +22,12 @@
 			<column name="userpassword" />
 		</property>
 	
+		<property name="lastLoginTime">
+			<column name="lastLoginTime" />
+		</property>
+		
+
+		
 	</class>
 
 </hibernate-mapping>

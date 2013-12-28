@@ -81,7 +81,7 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
   String sDescription;
   
 //------------------------------------------- -------------------------------------------Components of SecondTab
-
+  ComboBox selectTrainingProgramInSecondTab = new ComboBox("Training programs list");
   com.vaadin.ui.TextArea textfieldSecondTab = new com.vaadin.ui.TextArea("Training Description");
   ComboBox selectSecondTab = new ComboBox("Training diaries list");
   Button buttonInSecondTab = new Button("Add new training");
@@ -90,7 +90,7 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 //--------------------------------------------
   
 //------------------------------------------- -------------------------------------------Components of ThirdTab
-  ComboBox selectThirdTab = new ComboBox("Training programs list");
+
   com.vaadin.ui.TextArea textfieldThirdTab = new com.vaadin.ui.TextArea("Traning program description");
   Button buttonInThirdTab = new Button("Add new training program");
 
@@ -151,25 +151,25 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 
   //--------------------------------------------------------- -------------------------------------------Adding components to vertical layout 	
 	  verticalViewCreateNewDiary.addComponent(textfield);
-	  	verticalViewCreateNewDiary.setComponentAlignment(textfield, Alignment.MIDDLE_CENTER);
+	  	verticalViewCreateNewDiary.setComponentAlignment(textfield, Alignment.MIDDLE_LEFT);
 	 
 	  verticalViewCreateNewDiary.addComponent(datelabel);
-	  	verticalViewCreateNewDiary.setComponentAlignment(datelabel, Alignment.MIDDLE_CENTER);
+	  	verticalViewCreateNewDiary.setComponentAlignment(datelabel, Alignment.MIDDLE_LEFT);
   	 
 	  verticalViewCreateNewDiary.addComponent(date);
-	  	verticalViewCreateNewDiary.setComponentAlignment(date, Alignment.MIDDLE_CENTER);
+	  	verticalViewCreateNewDiary.setComponentAlignment(date, Alignment.MIDDLE_LEFT);
 	  	
   	  verticalViewCreateNewDiary.addComponent(programType);
-  	  	verticalViewCreateNewDiary.setComponentAlignment(programType, Alignment.MIDDLE_CENTER);
+  	  	verticalViewCreateNewDiary.setComponentAlignment(programType, Alignment.MIDDLE_LEFT);
   	
   	  verticalViewCreateNewDiary.addComponent(select);
-  	  	verticalViewCreateNewDiary.setComponentAlignment(select, Alignment.MIDDLE_CENTER);
+  	  	verticalViewCreateNewDiary.setComponentAlignment(select, Alignment.MIDDLE_LEFT);
 	  
 	  verticalViewCreateNewDiary.addComponent(descriptionlabel);
-	  	verticalViewCreateNewDiary.setComponentAlignment(descriptionlabel, Alignment.MIDDLE_CENTER);
+	  	verticalViewCreateNewDiary.setComponentAlignment(descriptionlabel, Alignment.MIDDLE_LEFT);
 	 
 	  verticalViewCreateNewDiary.addComponent(area);
-	  	verticalViewCreateNewDiary.setComponentAlignment(area, Alignment.MIDDLE_CENTER);
+	  	verticalViewCreateNewDiary.setComponentAlignment(area, Alignment.MIDDLE_LEFT);
 		 
 	  verticalViewCreateNewDiary.addComponent(button);
 	  	verticalViewCreateNewDiary.setComponentAlignment(button, Alignment.MIDDLE_CENTER);
@@ -190,12 +190,14 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 	  	{
 	  		selectSecondTab.addItem(String.valueOf(dzienniki.get(k).getNameOfDiary()));
 	  	}
-	  
+  	  verticalAddNewTrainingIntoExistingDiary.addComponent(selectTrainingProgramInSecondTab);
+  	  verticalAddNewTrainingIntoExistingDiary.setComponentAlignment(selectTrainingProgramInSecondTab, Alignment.MIDDLE_LEFT);
+	  	
 	  verticalAddNewTrainingIntoExistingDiary.addComponent(textfieldSecondTab);
-	  verticalAddNewTrainingIntoExistingDiary.setComponentAlignment(textfieldSecondTab, Alignment.MIDDLE_CENTER);
+	  verticalAddNewTrainingIntoExistingDiary.setComponentAlignment(textfieldSecondTab, Alignment.MIDDLE_LEFT);
 	  
 	  verticalAddNewTrainingIntoExistingDiary.addComponent(selectSecondTab);
-	  verticalAddNewTrainingIntoExistingDiary.setComponentAlignment(selectSecondTab, Alignment.MIDDLE_CENTER);
+	  verticalAddNewTrainingIntoExistingDiary.setComponentAlignment(selectSecondTab, Alignment.MIDDLE_LEFT);
 	  
 	  verticalAddNewTrainingIntoExistingDiary.addComponent(buttonInSecondTab);
 	  verticalAddNewTrainingIntoExistingDiary.setComponentAlignment(buttonInSecondTab, Alignment.MIDDLE_CENTER);
@@ -203,11 +205,10 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 //******************************************************************END OF CREATE NEW DIARY TAB******************************************************************   	 
 
 //******************************************************************ADD NEW TRAINING PROGRAM*********************************************************************
-	verticalAddNewTrainingProgram.addComponent(selectThirdTab);
-	  	verticalAddNewTrainingProgram.setComponentAlignment(selectThirdTab, Alignment.MIDDLE_CENTER);
+	
 	  
   	verticalAddNewTrainingProgram.addComponent(textfieldThirdTab);
-		verticalAddNewTrainingProgram.setComponentAlignment(textfieldThirdTab, Alignment.MIDDLE_CENTER);
+		verticalAddNewTrainingProgram.setComponentAlignment(textfieldThirdTab, Alignment.MIDDLE_LEFT);
 		
     verticalAddNewTrainingProgram.addComponent(buttonInThirdTab);
 		verticalAddNewTrainingProgram.setComponentAlignment(buttonInThirdTab, Alignment.MIDDLE_CENTER);
@@ -342,7 +343,7 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 		  private static final long serialVersionUID = 1L;
           public void buttonClick(ClickEvent event)
               {
-                 ButtonActions.SaveNewTrainingType(textfieldThirdTab, selectThirdTab);    
+                 ButtonActions.SaveNewTrainingType(textfieldThirdTab, selectTrainingProgramInSecondTab);    
               }
       }
       ); 
@@ -375,22 +376,27 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
     	
     	
     	verticalViewCreateNewDiarySplitPanel.setLocked(true);
+    	verticalViewCreateNewDiary.setMargin(true);
     	verticalViewCreateNewDiarySplitPanel.addComponent(verticalViewCreateNewDiary);
     	verticalViewCreateNewDiarySplitPanel.addComponent(usp);
     	
     	verticalAddNewTrainingIntoExistingDiarySplitPanel.setLocked(true);
+    	verticalAddNewTrainingIntoExistingDiary.setMargin(true);
     	verticalAddNewTrainingIntoExistingDiarySplitPanel.addComponent(verticalAddNewTrainingIntoExistingDiary);
     	verticalAddNewTrainingIntoExistingDiarySplitPanel.addComponent(usp2);
     	
     	verticalAddNewTrainingProgramSplitPanel.setLocked(true);
+    	verticalAddNewTrainingProgram.setMargin(true);
     	verticalAddNewTrainingProgramSplitPanel.addComponent(verticalAddNewTrainingProgram);
     	verticalAddNewTrainingProgramSplitPanel.addComponent(usp3);
     	
+    	editExistingDiary.setMargin(true);
     	editExistingDiarySplitPanel.setLocked(true);
     	editExistingDiarySplitPanel.addComponent(editExistingDiary);
     	editExistingDiarySplitPanel.addComponent(usp4);
     	
     	
+    	verticalEditExistingTraining.setMargin(true);
     	verticalEditExistingTrainingSplitPanel.setLocked(true);
     	verticalEditExistingTrainingSplitPanel.addComponent(verticalEditExistingTraining);
     	verticalEditExistingTrainingSplitPanel.addComponent(usp5);

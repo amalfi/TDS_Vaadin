@@ -26,6 +26,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.ProgressBar;
+import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -51,6 +52,9 @@ public class SimpleLoginView extends CustomComponent implements View, Button.Cli
     
    // Button createnewAccountButton;
     final Window window = new Window("Window");
+  
+    Table table = new Table();
+
     
     private final Button createnewAccountButton = new Button("Create new Account");    
     
@@ -62,7 +66,7 @@ public class SimpleLoginView extends CustomComponent implements View, Button.Cli
     	
     
     	createnewAccountButton.addClickListener(new Button.ClickListener() 
-    	    {
+	    {
 			private static final long serialVersionUID = 1L;
 
 			public void buttonClick(ClickEvent event) 
@@ -70,7 +74,7 @@ public class SimpleLoginView extends CustomComponent implements View, Button.Cli
 				CreateNewAccountPopup.AddComponentToPopup(window);
 				UI.getCurrent().addWindow(window);
 				
-    	    }
+	    }
     	});
         
         // Create the user input field

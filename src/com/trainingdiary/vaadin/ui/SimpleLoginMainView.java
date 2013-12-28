@@ -28,7 +28,9 @@ import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 
 public class SimpleLoginMainView extends CustomComponent implements View  //tutaj dodajesz elementy widoczne po zalogowaniu
 { 
@@ -37,7 +39,10 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 	private static final long serialVersionUID = 1L;
 	public static final String NAME = "";
 	TabSheet tabsheet = new TabSheet();
-
+	Window window = new Window();
+	
+	  final Window window2 = new Window();
+      Table table2= new Table();
 //------------------------------------------- ------------------------------------------- Layouts in each tab 
 	
   VerticalLayout verticalViewCreateNewDiary = new VerticalLayout(); //VerticalLayout of 'CreateNewDiary' tab
@@ -91,6 +96,10 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
   
 //------------------------------------------- -------------------------------------------Components of ThirdTab
 
+  TextField trainingProgramName = new TextField("Training program name");
+  TextField numberOfExcersises = new TextField("Number of excersises");
+  TextField numberOfSetsOfEachExcersise = new TextField("Number of sets");
+  TextField breakBetweenSets = new TextField("Break between sets");
   com.vaadin.ui.TextArea textfieldThirdTab = new com.vaadin.ui.TextArea("Traning program description");
   Button buttonInThirdTab = new Button("Add new training program");
 
@@ -207,8 +216,22 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 //******************************************************************ADD NEW TRAINING PROGRAM*********************************************************************
 	
 	  
-  	verticalAddNewTrainingProgram.addComponent(textfieldThirdTab);
-		verticalAddNewTrainingProgram.setComponentAlignment(textfieldThirdTab, Alignment.MIDDLE_LEFT);
+  
+		
+	verticalAddNewTrainingProgram.addComponent(trainingProgramName);	
+		verticalAddNewTrainingProgram.setComponentAlignment(trainingProgramName, Alignment.MIDDLE_LEFT);
+		
+	verticalAddNewTrainingProgram.addComponent(numberOfExcersises);
+		verticalAddNewTrainingProgram.setComponentAlignment(numberOfExcersises, Alignment.MIDDLE_LEFT);
+	
+	verticalAddNewTrainingProgram.addComponent(numberOfSetsOfEachExcersise);
+		verticalAddNewTrainingProgram.setComponentAlignment(numberOfSetsOfEachExcersise, Alignment.MIDDLE_LEFT);
+	
+	verticalAddNewTrainingProgram.addComponent(breakBetweenSets);
+		verticalAddNewTrainingProgram.setComponentAlignment(breakBetweenSets, Alignment.MIDDLE_LEFT);
+	
+	verticalAddNewTrainingProgram.addComponent(textfieldThirdTab);
+		verticalAddNewTrainingProgram.setComponentAlignment(textfieldThirdTab, Alignment.MIDDLE_LEFT);	
 		
     verticalAddNewTrainingProgram.addComponent(buttonInThirdTab);
 		verticalAddNewTrainingProgram.setComponentAlignment(buttonInThirdTab, Alignment.MIDDLE_CENTER);
@@ -343,7 +366,14 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 		  private static final long serialVersionUID = 1L;
           public void buttonClick(ClickEvent event)
               {
-                 ButtonActions.SaveNewTrainingType(textfieldThirdTab, selectTrainingProgramInSecondTab);    
+                 //ButtonActions.SaveNewTrainingType(textfieldThirdTab, selectTrainingProgramInSecondTab);    
+        	  String sNumberOfExcersises = numberOfExcersises.getValue();
+        	  String sNumberOfSetsOfEachExcersise = numberOfSetsOfEachExcersise.getValue();
+        	  String sBreakBetweenSets = breakBetweenSets.getValue();
+        	  String sTextFieldThirdTab = textfieldThirdTab.getValue();
+        	  
+	        	  AddNewTrainingTemplate.AddContentToEditableTrainingTemplate(sNumberOfExcersises, sNumberOfSetsOfEachExcersise, sBreakBetweenSets, sTextFieldThirdTab, table2, window2);
+	      		  UI.getCurrent().addWindow(window2);
               }
       }
       ); 

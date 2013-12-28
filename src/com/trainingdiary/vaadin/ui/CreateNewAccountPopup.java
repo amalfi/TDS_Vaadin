@@ -19,6 +19,7 @@ import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.ProgressBar;
+import com.vaadin.ui.Table;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Button.ClickEvent;
@@ -32,9 +33,12 @@ import com.vaadin.ui.Window;
 // Create a dynamically updating content for the popup
 public class CreateNewAccountPopup extends CustomComponent implements View
 {
+	private static final long serialVersionUID = 1L;
 
-	   static Logger log = Logger.getLogger(CreateNewAccountPopup.class);
+	static Logger log = Logger.getLogger(CreateNewAccountPopup.class);
 	  
+	   final Table table = new Table();
+	   
 	public static void AddComponentToPopup(Window window)
 	{
 		FormLayout content = new FormLayout();

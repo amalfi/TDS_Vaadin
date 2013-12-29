@@ -40,6 +40,14 @@ static Logger log = Logger.getLogger(Training.class);
   
   public String description;
   public String choosedDiary;
+  
+  public String trainingProgramName;
+  public String numberOfExcersises;
+  public String numberOfSets;
+  public String breakBetweenSets;
+  
+  
+  
   public HashMap<String, DiaryBean> allDiaries = new HashMap<String,DiaryBean>();
   public static ArrayList<Training> allTrainings = new ArrayList<Training>();
 //------------------------------------------------------------------------------
@@ -49,9 +57,42 @@ static Logger log = Logger.getLogger(Training.class);
 }
 */
 
+  
 public ArrayList<Training> getAllTrainings() 
 {
 	return allTrainings;
+}
+
+public String getTrainingProgramName() {
+	return trainingProgramName;
+}
+
+public void setTrainingProgramName(String trainingProgramName) {
+	this.trainingProgramName = trainingProgramName;
+}
+
+public String getNumberOfExcersises() {
+	return numberOfExcersises;
+}
+
+public void setNumberOfExcersises(String numberOfExcersises) {
+	this.numberOfExcersises = numberOfExcersises;
+}
+
+public String getNumberOfSets() {
+	return numberOfSets;
+}
+
+public void setNumberOfSets(String numberOfSets) {
+	this.numberOfSets = numberOfSets;
+}
+
+public String getBreakBetweenSets() {
+	return breakBetweenSets;
+}
+
+public void setBreakBetweenSets(String breakBetweenSets) {
+	this.breakBetweenSets = breakBetweenSets;
 }
 
 public void setAllTrainings(ArrayList<Training> allTrainings) {

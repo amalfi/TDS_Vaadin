@@ -10,8 +10,13 @@ import com.trainingdiary.ProgramType;
 import com.trainingdiary.Training;
 import com.trainingdiary.tools.ButtonActions;
 import com.vaadin.data.Property;
+import com.vaadin.data.validator.IntegerRangeValidator;
+import com.vaadin.data.validator.IntegerValidator;
+import com.vaadin.data.validator.RegexpValidator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.server.Page;
+import com.vaadin.shared.Position;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -23,6 +28,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.JavaScript;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.RichTextArea;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
@@ -40,6 +46,7 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 	public static final String NAME = "";
 	TabSheet tabsheet = new TabSheet();
 	Window window = new Window();
+	Notification notification2 = new Notification("At least one of required fields is empty",Notification.TYPE_WARNING_MESSAGE);
 	
 	  final Window window2 = new Window();
       Table table2= new Table();
@@ -138,7 +145,7 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
   
 //--------------------------------------------
   
-    @SuppressWarnings("static-access")
+    @SuppressWarnings({ "static-access", "deprecation" })
 	public SimpleLoginMainView()  //here we can add action listeners etc
     {
 //******************************************************************CREATE NEW DIARY TAB******************************************************************   	 
@@ -220,18 +227,27 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 		
 	verticalAddNewTrainingProgram.addComponent(trainingProgramName);	
 		verticalAddNewTrainingProgram.setComponentAlignment(trainingProgramName, Alignment.MIDDLE_LEFT);
+			trainingProgramName.addValidator(new RegexpValidator("", "Input should be at least 5 characters long."));
+				trainingProgramName.setRequired(true);
 		
 	verticalAddNewTrainingProgram.addComponent(numberOfExcersises);
 		verticalAddNewTrainingProgram.setComponentAlignment(numberOfExcersises, Alignment.MIDDLE_LEFT);
+				numberOfExcersises.addValidator(new IntegerRangeValidator("Number of excersises must be an Integer value",1,30));
+				numberOfExcersises.setRequired(true);;
 	
 	verticalAddNewTrainingProgram.addComponent(numberOfSetsOfEachExcersise);
 		verticalAddNewTrainingProgram.setComponentAlignment(numberOfSetsOfEachExcersise, Alignment.MIDDLE_LEFT);
+				numberOfSetsOfEachExcersise.addValidator(new IntegerRangeValidator("Number of sets must be an Integer value", 1, 40 ));
+				numberOfSetsOfEachExcersise.setRequired(true);
 	
 	verticalAddNewTrainingProgram.addComponent(breakBetweenSets);
 		verticalAddNewTrainingProgram.setComponentAlignment(breakBetweenSets, Alignment.MIDDLE_LEFT);
-	
+			breakBetweenSets.addValidator(new IntegerRangeValidator("Rest time between sets should be and integer value (seconds) ", 10, 500));
+			breakBetweenSets.setRequired(true);
+			
 	verticalAddNewTrainingProgram.addComponent(textfieldThirdTab);
 		verticalAddNewTrainingProgram.setComponentAlignment(textfieldThirdTab, Alignment.MIDDLE_LEFT);	
+			textfieldThirdTab.setRequired(true);;
 		
     verticalAddNewTrainingProgram.addComponent(buttonInThirdTab);
 		verticalAddNewTrainingProgram.setComponentAlignment(buttonInThirdTab, Alignment.MIDDLE_CENTER);
@@ -367,13 +383,26 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
           public void buttonClick(ClickEvent event)
               {
                  //ButtonActions.SaveNewTrainingType(textfieldThirdTab, selectTrainingProgramInSecondTab);    
+        	  String sTrainingProgramName = trainingProgramName.getValue();
         	  String sNumberOfExcersises = numberOfExcersises.getValue();
         	  String sNumberOfSetsOfEachExcersise = numberOfSetsOfEachExcersise.getValue();
         	  String sBreakBetweenSets = breakBetweenSets.getValue();
         	  String sTextFieldThirdTab = textfieldThirdTab.getValue();
         	  
-	        	  AddNewTrainingTemplate.AddContentToEditableTrainingTemplate(sNumberOfExcersises, sNumberOfSetsOfEachExcersise, sBreakBetweenSets, sTextFieldThirdTab, table2, window2);
+        	  if (AddNewTrainingTemplate.fieldValidator(sTrainingProgramName, sNumberOfExcersises, sNumberOfSetsOfEachExcersise, sBreakBetweenSets, sTextFieldThirdTab, table2, window2)==true)
+        	  {
+        	  //(String trainingProgramName, String numberOfExcersises, String numberOfSets, String breakBetweenSets, Table table, Window window)
+	        	  AddNewTrainingTemplate.AddContentToEditableTrainingTemplate(sTrainingProgramName, sNumberOfExcersises, sNumberOfSetsOfEachExcersise, sBreakBetweenSets, sTextFieldThirdTab, table2, window2);
 	      		  UI.getCurrent().addWindow(window2);
+        	  }
+        	 else
+        	  {
+        		
+        			notification2.setDelayMsec(600);
+					notification2.setPosition(Position.MIDDLE_CENTER);
+					notification2.show(Page.getCurrent());
+        	  }
+        	  
               }
       }
       ); 

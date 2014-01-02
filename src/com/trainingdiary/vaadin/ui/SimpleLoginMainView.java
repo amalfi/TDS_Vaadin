@@ -2,6 +2,7 @@ package com.trainingdiary.vaadin.ui;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 import org.apache.log4j.Logger;
 
@@ -47,7 +48,7 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 	TabSheet tabsheet = new TabSheet();
 	Window window = new Window();
 	Notification notification2 = new Notification("At least one of required fields is empty",Notification.TYPE_WARNING_MESSAGE);
-	
+	Notification emptyTrainingTemplateNotification = new Notification("Training template list shouldnt be empty",Notification.TYPE_ERROR_MESSAGE);
 	  final Window window2 = new Window();
       Table table2= new Table();
 //------------------------------------------- ------------------------------------------- Layouts in each tab 
@@ -69,7 +70,7 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 //------------------------------------------- ------------------------------------------- Components of FirstTab
 
   TextField textfield = new TextField("Name");
-  ComboBox select = new ComboBox("Training Programs list");
+  ComboBox select = new ComboBox("Training Programs templates list");
   DateField date = new DateField("Date");
   RichTextArea area = new RichTextArea("Description");
  // CustomTabSheet ctb = new CustomTabSheet();
@@ -94,8 +95,9 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
   
 //------------------------------------------- -------------------------------------------Components of SecondTab
   ComboBox selectTrainingProgramInSecondTab = new ComboBox("Training programs list");
-  com.vaadin.ui.TextArea textfieldSecondTab = new com.vaadin.ui.TextArea("Training Description");
+  com.vaadin.ui.RichTextArea textfieldSecondTab = new com.vaadin.ui.RichTextArea("Training Description");
   ComboBox selectSecondTab = new ComboBox("Training diaries list");
+  Button loadDiaryTemplate = new Button("Load diary template");
   Button buttonInSecondTab = new Button("Add new training");
   
   
@@ -178,9 +180,9 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
   	  verticalViewCreateNewDiary.addComponent(programType);
   	  	verticalViewCreateNewDiary.setComponentAlignment(programType, Alignment.MIDDLE_LEFT);
   	
-  	  verticalViewCreateNewDiary.addComponent(select);
+ /* 	  verticalViewCreateNewDiary.addComponent(select);
   	  	verticalViewCreateNewDiary.setComponentAlignment(select, Alignment.MIDDLE_LEFT);
-	  
+	  */
 	  verticalViewCreateNewDiary.addComponent(descriptionlabel);
 	  	verticalViewCreateNewDiary.setComponentAlignment(descriptionlabel, Alignment.MIDDLE_LEFT);
 	 
@@ -199,18 +201,29 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 	  fittingLayout.addComponent(verticalAddNewTrainingIntoExistingDiary);
 	  
 	  //-----Here we add content to selectSecondTab
-	  	DiaryBean diarybean = new DiaryBean();
+	  HashMap<String, DiaryBean> allDiaries =  DiaryBean.LoadDiaries();
+	  
+	  for(int i=0; i<allDiaries.size(); i++)
+	  {
+		  String currentDiary = String.valueOf(allDiaries.get(String.valueOf(i)).getNameOfDiary());
+		  selectSecondTab.addItem(currentDiary);
+	  }
+	  //-------------------------------------------
+	  
+	  DiaryBean diarybean = new DiaryBean();
 	  	ArrayList<DiaryBean> dzienniki = diarybean.loadDiariesArray();
 	  	
-	  	for(int k=0; k<dzienniki.size(); k++)
-	  	{
-	  		selectSecondTab.addItem(String.valueOf(dzienniki.get(k).getNameOfDiary()));
-	  	}
-  	  verticalAddNewTrainingIntoExistingDiary.addComponent(selectTrainingProgramInSecondTab);
-  	  verticalAddNewTrainingIntoExistingDiary.setComponentAlignment(selectTrainingProgramInSecondTab, Alignment.MIDDLE_LEFT);
 	  	
+  	 verticalAddNewTrainingIntoExistingDiary.addComponent(select);
+ 	  verticalAddNewTrainingIntoExistingDiary.setComponentAlignment(select, Alignment.MIDDLE_LEFT);
+	 
+ 	 verticalAddNewTrainingIntoExistingDiary.addComponent(loadDiaryTemplate);
+	  verticalAddNewTrainingIntoExistingDiary.setComponentAlignment(loadDiaryTemplate, Alignment.MIDDLE_CENTER);
+	
+  	  
 	  verticalAddNewTrainingIntoExistingDiary.addComponent(textfieldSecondTab);
 	  verticalAddNewTrainingIntoExistingDiary.setComponentAlignment(textfieldSecondTab, Alignment.MIDDLE_LEFT);
+	  //textfieldSecondTab.setRequired(true);
 	  
 	  verticalAddNewTrainingIntoExistingDiary.addComponent(selectSecondTab);
 	  verticalAddNewTrainingIntoExistingDiary.setComponentAlignment(selectSecondTab, Alignment.MIDDLE_LEFT);
@@ -221,10 +234,7 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 //******************************************************************END OF CREATE NEW DIARY TAB******************************************************************   	 
 
 //******************************************************************ADD NEW TRAINING PROGRAM*********************************************************************
-	
-	  
-  
-		
+
 	verticalAddNewTrainingProgram.addComponent(trainingProgramName);	
 		verticalAddNewTrainingProgram.setComponentAlignment(trainingProgramName, Alignment.MIDDLE_LEFT);
 			trainingProgramName.addValidator(new RegexpValidator("", "Input should be at least 5 characters long."));
@@ -363,6 +373,27 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 //******************************************************************END OF Action of 'Save new diary' button ************************************************	 
 //******************************************************************Action of 'Add new training' button ************************************************	 
 	  //buttonInSecondTab
+	  
+	  //textfieldSecondTab
+	  
+	  loadDiaryTemplate.addClickListener(new Button.ClickListener() 
+	  {
+		@Override
+		public void buttonClick(ClickEvent event) 
+		{
+			final String sSelectedTrainingTemplate= String.valueOf(select.getValue()); //value from 'Training Programs templates list'
+			
+			if(sSelectedTrainingTemplate.equals("")|| sSelectedTrainingTemplate==null)
+			{
+				emptyTrainingTemplateNotification.setDelayMsec(2500);
+				emptyTrainingTemplateNotification.setPosition(Position.MIDDLE_CENTER);
+				emptyTrainingTemplateNotification.show(Page.getCurrent());
+			}
+			ButtonActions.LoadDiaryTemplate(textfieldSecondTab, sSelectedTrainingTemplate);
+		}
+	  });
+	  
+	  
 	  buttonInSecondTab.addClickListener(new Button.ClickListener() 
 	  {
 		private static final long serialVersionUID = 1L;

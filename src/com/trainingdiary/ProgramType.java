@@ -40,11 +40,47 @@ public class ProgramType implements Serializable
 	private String trainingType;
 	private HashMap<String,Object> pts = new HashMap<String,Object>();
 	
-
+	  private String trainingProgramName;
+	  private String numberOfExcersises;
+	  private String numberOfSets;
+	  private String breakBetweenSets;
+	  
 	//----------------------------------------------------
-	
+  
 	public Integer getId() {
 		return id;
+	}
+
+	public String getTrainingProgramName() {
+		return trainingProgramName;
+	}
+
+	public void setTrainingProgramName(String trainingProgramName) {
+		this.trainingProgramName = trainingProgramName;
+	}
+
+	public String getNumberOfExcersises() {
+		return numberOfExcersises;
+	}
+
+	public void setNumberOfExcersises(String numberOfExcersises) {
+		this.numberOfExcersises = numberOfExcersises;
+	}
+
+	public String getNumberOfSets() {
+		return numberOfSets;
+	}
+
+	public void setNumberOfSets(String numberOfSets) {
+		this.numberOfSets = numberOfSets;
+	}
+
+	public String getBreakBetweenSets() {
+		return breakBetweenSets;
+	}
+
+	public void setBreakBetweenSets(String breakBetweenSets) {
+		this.breakBetweenSets = breakBetweenSets;
 	}
 
 	public void setId(Integer id) {
@@ -119,8 +155,9 @@ public class ProgramType implements Serializable
 		return pts;
 	}
 
-	public static void SaveProgram(String programName, String programDescription, String trainingType) //method which save new training program which will be used by creating new training diary
-	   {
+
+	public static void SaveProgram(String trainingProgramName, String numberOfExcersises, String numberOfSets, String breakBetweenSets, String programDescription) //method which save new training program which will be used by creating new training diary
+	{
 	       Session session = HibernateUtil.getSessionFactory().openSession();
 	       Transaction transaction = null;
 	       try 
@@ -129,10 +166,12 @@ public class ProgramType implements Serializable
 	          transaction = session.beginTransaction();
 	          
 	          ProgramType pm = new ProgramType();
-	          pm.setProgramName(programName);
+	          pm.setProgramName(trainingProgramName);
+	          pm.setNumberOfExcersises(numberOfExcersises);
+	          pm.setNumberOfSets(numberOfSets);
+	          pm.setBreakBetweenSets(breakBetweenSets);
 	          pm.setProgramDescription(programDescription);
-	          pm.setTrainingType(trainingType);
-	 
+
 	          session.save(pm);
 	           transaction.commit();
 	        
@@ -152,7 +191,7 @@ public class ProgramType implements Serializable
 	       }
 		
 		
-	   }
+	}
 }
 
 					

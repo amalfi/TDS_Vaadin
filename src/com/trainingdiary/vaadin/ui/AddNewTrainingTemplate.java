@@ -6,6 +6,7 @@ import java.util.GregorianCalendar;
 
 import org.apache.log4j.Logger;
 
+import com.trainingdiary.ProgramType;
 import com.vaadin.data.Property;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
@@ -29,7 +30,7 @@ public class AddNewTrainingTemplate  extends CustomComponent implements View
     final Table table = new Table();
 
 	
-	public static void AddContentToEditableTrainingTemplate(String trainingProgramName, String numberOfExcersises, String numberOfSets, String breakBetweenSets, String programDescription, final Table table, Window window)
+	public static void AddContentToEditableTrainingTemplate(final String trainingProgramName, final String numberOfExcersises, final String numberOfSets, final String breakBetweenSets, final String programDescription, final Table table, Window window)
 	{
 	    Button generatePDF = new Button("Generate PDF");
 	    Button saveNewTrainingProgram = new Button("Save new training program");
@@ -76,7 +77,7 @@ public class AddNewTrainingTemplate  extends CustomComponent implements View
 			public void buttonClick(ClickEvent event) 
 			{
 
-				
+				ProgramType.SaveProgram(trainingProgramName, numberOfExcersises, numberOfSets, breakBetweenSets, programDescription);
 			}
 		
 	      });

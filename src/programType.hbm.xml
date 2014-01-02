@@ -24,6 +24,22 @@
 			<column name="trainingType"/>
 		</property>
 	
+		<property name="trainingProgramName">
+			<column name="trainingProgramName" />
+		</property>	
+		
+		<property name="numberOfExcersises">
+			<column name="numberOfExcersises" />
+		</property>	
+		
+		<property name="numberOfSets">
+			<column name="numberOfSets" />
+		</property>	
+		
+		<property name="breakBetweenSets">
+			<column name="breakBetweenSets" />
+		</property>	
+	
 	</class>
 
 </hibernate-mapping>

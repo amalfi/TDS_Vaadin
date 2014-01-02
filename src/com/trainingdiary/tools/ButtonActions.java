@@ -1,12 +1,19 @@
 package com.trainingdiary.tools;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 import com.trainingdiary.DiaryBean;
 import com.trainingdiary.ProgramType;
 import com.trainingdiary.Training;
+import com.trainingdiary.database.HibernateUtil;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CustomComponent;
@@ -20,6 +27,7 @@ public class ButtonActions extends CustomComponent
 
 	private static final long serialVersionUID = 1L;
 	static Logger log = Logger.getLogger(ButtonActions.class);
+	static HashMap<String,ProgramType> selectedTrainingTemplates  = new HashMap<String,ProgramType>();
 	
 	public static void SaveNewDiaryAction(Button button,  final ComboBox programType, final DateField date, final TextField textfield, final RichTextArea area )
 	{
@@ -43,7 +51,7 @@ public class ButtonActions extends CustomComponent
 				 }
 	  }
 	
-	public static void SaveNewTrainingIntoExistingDiaryAction(final ComboBox selectSecondTab, final TextArea textfieldSecondTab)
+	public static void SaveNewTrainingIntoExistingDiaryAction(final ComboBox selectSecondTab, final RichTextArea textfieldSecondTab)
 	{
 		try
 		 {
@@ -75,7 +83,7 @@ public class ButtonActions extends CustomComponent
                  String trainingType = String.valueOf(selectThirdTab.getValue());
                 
                  log.debug("Now i try to save date ");
-                 ProgramType.SaveProgram(programName, programDescription, trainingType);
+                 ProgramType.SaveProgram(programName, programDescription, trainingType, trainingType, trainingType);
          }
          catch(Exception e)
          {
@@ -87,6 +95,63 @@ public class ButtonActions extends CustomComponent
 	}
 	
 	
+	public static RichTextArea LoadDiaryTemplate(RichTextArea content, String nameOfTrainingProgram)
+	{
+		//Function which would be update content of RichTextArea field, with template date from database
 
+		String sContentOfRichTextArea=generateStringWithTrainingTemplate(nameOfTrainingProgram);
+		
+		content.setValue(sContentOfRichTextArea);
+		return content;
+	}
+	//List currentdiaries = session.createQuery("from DiaryBean where currentdiaryuser = :currentuser").setParameter("currentuser", currentUser).list(); //is worth to remember (common mistake) - when you use want to select from table, use bean name, not table name
+    
+	public static HashMap<String, ProgramType> LoadSelectedTrainingProgramTemplate(String nameOfTrainingProgram)
+	{
+		Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = null;
+        try 
+        { 
+            transaction = session.beginTransaction();
+            List programtypes = session.createQuery("from ProgramType where programname =: nameOfProgram ").setParameter("nameOfProgram", nameOfTrainingProgram).list();
+            for (Iterator iterator = programtypes.iterator(); iterator.hasNext();)
+            {
+                ProgramType programType = (ProgramType) iterator.next();
+                selectedTrainingTemplates.put(programType.getProgramName().toString(), programType);
+            }          	
+            transaction.commit();
+        } 
+        catch (HibernateException e) 
+        {
+            transaction.rollback();
+            e.printStackTrace();  
+            log.debug(e.getMessage());
+        } 
+        finally 
+        {
+            session.close();
+        }
+		return selectedTrainingTemplates;
+	}
+	
+	
+	public static String generateStringWithTrainingTemplate (String nameOfTrainingProgram)
+	{
+		HashMap<String, ProgramType> selectedTrainingTemplate = LoadSelectedTrainingProgramTemplate(nameOfTrainingProgram);
+		String sTrainingDescriptionFieldContent="";
+		
+		for(int i=0; i<selectedTrainingTemplate.size(); i++)
+		{
+			
+			
+			sTrainingDescriptionFieldContent.concat(String.valueOf(selectedTrainingTemplate.get(i).getProgramName()));   //we add to sTrainingDescriptionField program name
+			sTrainingDescriptionFieldContent.concat(String.valueOf(selectedTrainingTemplate.get(i).getNumberOfSets()));  //we add to sTrainingDescriptionField number of sets
+			sTrainingDescriptionFieldContent.concat(String.valueOf(selectedTrainingTemplate.get(i).getProgramDescription()));
+			sTrainingDescriptionFieldContent.concat(String.valueOf(selectedTrainingTemplate.get(i).getTrainingType()));
+			
+		}
+		
+		return sTrainingDescriptionFieldContent;
+	}
 	
 }

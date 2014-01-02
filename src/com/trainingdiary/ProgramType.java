@@ -127,6 +127,40 @@ public class ProgramType implements Serializable
 		return pts;
 	}
 	
+	
+	public static ArrayList<String> LoadProgramTypesToArrayList()
+	{
+		ArrayList<String> programTypesList = new ArrayList<String>();
+		
+		Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = null;
+        try 
+        { 
+            transaction = session.beginTransaction();
+            List programtypes = session.createQuery("from ProgramType").list(); //is worth to remember (common mistake) - when you use want to select from table, use bean name, not table name
+            for (Iterator iterator = programtypes.iterator(); iterator.hasNext();)
+            {
+                ProgramType programType = (ProgramType) iterator.next();
+                programTypesList.add(programType.getTrainingProgramName());
+             
+            }          	
+            transaction.commit();
+        } 
+        catch (HibernateException e) 
+        {
+            transaction.rollback();
+            e.printStackTrace();  
+            log.debug(e.getMessage());
+        } 
+        finally 
+        {
+            session.close();
+        }
+		return programTypesList;
+
+	}
+	
+	
 	public HashMap<String,Object> LoadPrograms()
 	{
 		Session session = HibernateUtil.getSessionFactory().openSession();

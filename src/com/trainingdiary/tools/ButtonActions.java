@@ -98,7 +98,6 @@ public class ButtonActions extends CustomComponent
 	public static RichTextArea LoadDiaryTemplate(RichTextArea content, String nameOfTrainingProgram)
 	{
 		//Function which would be update content of RichTextArea field, with template date from database
-
 		String sContentOfRichTextArea=generateStringWithTrainingTemplate(nameOfTrainingProgram);
 		
 		content.setValue(sContentOfRichTextArea);
@@ -112,12 +111,14 @@ public class ButtonActions extends CustomComponent
         Transaction transaction = null;
         try 
         { 
-            transaction = session.beginTransaction();
-            List programtypes = session.createQuery("from ProgramType where programname =: nameOfProgram ").setParameter("nameOfProgram", nameOfTrainingProgram).list();
+        transaction = session.beginTransaction();
+        //List programtypes = session.createQuery("from ProgramType where programname = nameOfProgram ").setParameter("nameOfProgram", nameOfTrainingProgram).list();
+        String hql = "from ProgramType pt where pt.trainingProgramName= '"+ nameOfTrainingProgram +"'";
+        List programtypes = session.createQuery(hql).list();
             for (Iterator iterator = programtypes.iterator(); iterator.hasNext();)
             {
                 ProgramType programType = (ProgramType) iterator.next();
-                selectedTrainingTemplates.put(programType.getProgramName().toString(), programType);
+                selectedTrainingTemplates.put(programType.getTrainingProgramName().toString(), programType);
             }          	
             transaction.commit();
         } 
@@ -143,11 +144,17 @@ public class ButtonActions extends CustomComponent
 		for(int i=0; i<selectedTrainingTemplate.size(); i++)
 		{
 			
+			String sProgramName=String.valueOf(selectedTrainingTemplate.get(nameOfTrainingProgram).getProgramName());
+			sTrainingDescriptionFieldContent.concat(sProgramName);   //we add to sTrainingDescriptionField program name
 			
-			sTrainingDescriptionFieldContent.concat(String.valueOf(selectedTrainingTemplate.get(i).getProgramName()));   //we add to sTrainingDescriptionField program name
-			sTrainingDescriptionFieldContent.concat(String.valueOf(selectedTrainingTemplate.get(i).getNumberOfSets()));  //we add to sTrainingDescriptionField number of sets
-			sTrainingDescriptionFieldContent.concat(String.valueOf(selectedTrainingTemplate.get(i).getProgramDescription()));
-			sTrainingDescriptionFieldContent.concat(String.valueOf(selectedTrainingTemplate.get(i).getTrainingType()));
+			String sNumberOfSets=String.valueOf(selectedTrainingTemplate.get(nameOfTrainingProgram).getNumberOfSets());
+			sTrainingDescriptionFieldContent.concat(sNumberOfSets);  //we add to sTrainingDescriptionField number of sets
+			
+			String sSelectedTraining=String.valueOf(selectedTrainingTemplate.get(nameOfTrainingProgram).getProgramDescription());
+			sTrainingDescriptionFieldContent.concat(sSelectedTraining);
+			
+			String sGetTrainingType=String.valueOf(selectedTrainingTemplate.get(nameOfTrainingProgram).getTrainingType());
+			sTrainingDescriptionFieldContent.concat(sGetTrainingType);
 			
 		}
 		

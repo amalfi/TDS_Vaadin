@@ -154,17 +154,15 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
      // setCompositionRoot(new CssLayout(text, logout));  //tutaj w parametrachSetCompositionRoot ustawiamy komponenty jakie maja byc wstawione do widoku, 
     	/*ctb.setVisible(true);
     	ctb.setEnabled(true);*/
-    	
 
-    	Training training = new Training();
+     Training training = new Training();
     	
-      ArrayList<Training> trainings = new ArrayList<Training>();
-      trainings = training.LoadTrainings();
+      ArrayList<String> trainingsPrograms = new ArrayList<String>();
+      trainingsPrograms = ProgramType.LoadProgramTypesToArrayList();
 	  
-      for(int i=0; i<trainings.size(); i++)
+      for(int i=0; i<trainingsPrograms.size(); i++)
       {
-    	  log.debug("Currently loaded training : " + String.valueOf(trainings.get(i)));
-    	  select.addItem(trainings.get(i).getDescription());
+    	  select.addItem(trainingsPrograms.get(i));
       }
 
   //--------------------------------------------------------- -------------------------------------------Adding components to vertical layout 	

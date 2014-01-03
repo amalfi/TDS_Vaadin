@@ -145,16 +145,16 @@ public class ButtonActions extends CustomComponent
 		{
 			
 			String sProgramName=String.valueOf(selectedTrainingTemplate.get(nameOfTrainingProgram).getProgramName());
-			sTrainingDescriptionFieldContent.concat(sProgramName);   //we add to sTrainingDescriptionField program name
+			sTrainingDescriptionFieldContent=sTrainingDescriptionFieldContent + sProgramName;   //we add to sTrainingDescriptionField program name
 			
 			String sNumberOfSets=String.valueOf(selectedTrainingTemplate.get(nameOfTrainingProgram).getNumberOfSets());
-			sTrainingDescriptionFieldContent.concat(sNumberOfSets);  //we add to sTrainingDescriptionField number of sets
+			sTrainingDescriptionFieldContent=sTrainingDescriptionFieldContent + sNumberOfSets;  //we add to sTrainingDescriptionField number of sets
 			
 			String sSelectedTraining=String.valueOf(selectedTrainingTemplate.get(nameOfTrainingProgram).getProgramDescription());
-			sTrainingDescriptionFieldContent.concat(sSelectedTraining);
+			sTrainingDescriptionFieldContent=sTrainingDescriptionFieldContent + sSelectedTraining;
 			
 			String sGetTrainingType=String.valueOf(selectedTrainingTemplate.get(nameOfTrainingProgram).getTrainingType());
-			sTrainingDescriptionFieldContent.concat(sGetTrainingType);
+			sTrainingDescriptionFieldContent=sTrainingDescriptionFieldContent + sGetTrainingType;
 			
 		}
 		

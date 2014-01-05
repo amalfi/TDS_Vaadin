@@ -225,6 +225,6 @@ public class SimpleLoginView extends CustomComponent implements View, Button.Cli
 	            this.password.setValue(null);
 	            this.password.focus();
 	        }
-	    }
-    }
+		}
+	}
 }

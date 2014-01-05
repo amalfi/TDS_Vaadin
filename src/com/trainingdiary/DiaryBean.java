@@ -172,6 +172,55 @@ public class DiaryBean implements Serializable
 	}
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	public static void UpdateDiary(String programType, Date diaryCreationDate, String diaryDescription, String nameOfDiary)
+	{
+	    Session session = HibernateUtil.getSessionFactory().openSession();
+	       Transaction transaction = null;
+	       try 
+	       {
+	    	 
+	       log.debug("Session.beginTransaction process started");
+	          transaction = session.beginTransaction();
+	          DiaryBean diaryBean = new DiaryBean();
+	       //log.debug("Setting properties of new diary : "+choosedTrainingPlan+" , " + diaryCreationDate + ", " + diaryDescription + ", " + nameOfDiary);
+	          diaryBean.setChoosedTrainingPlan(programType/*programType.getProgramName()*/);
+	          diaryBean.setDiaryCreationDate(diaryCreationDate);
+	          diaryBean.setDiaryDescription(diaryDescription);
+	          diaryBean.setNameOfDiary(nameOfDiary);
+	          diaryBean.setCurrentDiaryUser(String.valueOf(SimpleLoginView.currentLoadedUser));
+	          //-------------------------------------------------------------
+	          log.debug("Sprawdzam czy dziennik o danej nazwie juz istnieje");
+	          //-------------------------------------------------------------
+	          if(checkIfDiaryExistInDatabase(session, transaction, nameOfDiary)==true)
+ 		  { 
+	           session.update(diaryBean);
+	           transaction.commit();
+	           log.debug("Diary created succesfully");
+ 		  }
+	          else
+	          {
+	        	  Notification.show("Error","Diary with this cannot be update because it doesnt exist",Notification.Type.WARNING_MESSAGE);	
+	          }
+
+			
+	       } 
+	       catch (HibernateException e) 
+	       
+	       {
+	           transaction.rollback();
+	           e.printStackTrace();
+	           log.debug(e.getMessage());
+	       } 
+	       
+	       finally 
+	       {
+	           session.close();
+	       }
+	}
+	
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+		
+	
 	public static String SaveDiary(String programType, Date diaryCreationDate, String diaryDescription, String nameOfDiary) //method which save diary0++
 	   {
 	       Session session = HibernateUtil.getSessionFactory().openSession();
@@ -328,6 +377,39 @@ public class DiaryBean implements Serializable
 		}
 		
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+		public static ArrayList<String> getDiariesNamesForCurrentUser()
+		{
+			ArrayList<String> currentDiariesNames = new ArrayList<String>();
+	        String currentUser= SimpleLoginView.currentLoadedUser;
+			
+			Session session = HibernateUtil.getSessionFactory().openSession();
+	        Transaction transaction = null;
+	        try 
+	        { 
+	            transaction = session.beginTransaction();
+	            List programtypes = session.createQuery("from DiaryBean where currentdiaryuser = :currentuser").setParameter("currentuser", currentUser).list(); //is worth to remember (common mistake) - when you use want to select from table, use bean name, not table name
+	            for (Iterator iterator = programtypes.iterator(); iterator.hasNext();)
+	            {
+	                DiaryBean diary = (DiaryBean) iterator.next();
+	                currentDiariesNames.add(diary.getNameOfDiary());
+	             
+	            }          	
+	            transaction.commit();
+	        } 
+	        catch (HibernateException e) 
+	        {
+	            transaction.rollback();
+	            e.printStackTrace();  
+	            log.debug(e.getMessage());
+	        } 
+	        finally 
+	        {
+	            session.close();	
+	        }
+			return currentDiariesNames;
+		}
+		
+		
 		public static HashMap<String, DiaryBean> getDiariesForCurrentUser()
 		{
 			Session session = HibernateUtil.getSessionFactory().openSession();

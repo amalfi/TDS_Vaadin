@@ -1,5 +1,6 @@
 package com.trainingdiary.vaadin.ui;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -12,7 +13,6 @@ import com.trainingdiary.Training;
 import com.trainingdiary.tools.ButtonActions;
 import com.vaadin.data.Property;
 import com.vaadin.data.validator.IntegerRangeValidator;
-import com.vaadin.data.validator.IntegerValidator;
 import com.vaadin.data.validator.RegexpValidator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
@@ -25,6 +25,7 @@ import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.DateField;
+import com.vaadin.ui.Field.ValueChangeEvent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.JavaScript;
@@ -33,7 +34,6 @@ import com.vaadin.ui.Notification;
 import com.vaadin.ui.RichTextArea;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
-import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -47,10 +47,14 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 	public static final String NAME = "";
 	TabSheet tabsheet = new TabSheet();
 	Window window = new Window();
+	@SuppressWarnings("deprecation")
 	Notification notification2 = new Notification("At least one of required fields is empty",Notification.TYPE_WARNING_MESSAGE);
+	@SuppressWarnings("deprecation")
 	Notification emptyTrainingTemplateNotification = new Notification("Training template list shouldnt be empty",Notification.TYPE_ERROR_MESSAGE);
-	  final Window window2 = new Window();
-      Table table2= new Table();
+	//Notification successfullySavedTrainingTemplate = new Notification("Training template saving successfully",Notification.TYPE_HUMANIZED_MESSAGE);
+	
+	final Window window2 = new Window();
+    Table table2= new Table();
 //------------------------------------------- ------------------------------------------- Layouts in each tab 
 	
   VerticalLayout verticalViewCreateNewDiary = new VerticalLayout(); //VerticalLayout of 'CreateNewDiary' tab
@@ -123,7 +127,7 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 //------------------------------------------- -------------------------------------------Components of FifthTab
   	
   final Table tableEditTraining = new Table();
-  final CheckBox switchEditableTrainingTable = new CheckBox("Editable");
+ // final CheckBox switchEditableTrainingTable = new CheckBox("Editable");
   Button saveChangesInEditedTraining = new Button("Save changes");
    
 
@@ -273,9 +277,7 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 		table.addContainerProperty("Training Program", String.class, null);
 		table.addContainerProperty("Description", String.class, null);
 		
-		
-		
-		for(int j=0; j<dzienniki.size(); j++)
+		for(int j=0; j<dzienniki.size(); j++)	
 		{
 			String nameOfDiary = String.valueOf(dzienniki.get(j).getNameOfDiary());
 			String diaryCreationDate = String.valueOf(dzienniki.get(j).getDiaryCreationDate());
@@ -287,6 +289,8 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 		/*End of adding rows to table*/
 
 		final CheckBox switchEditable = new CheckBox("Editable");
+		switchEditable.setImmediate(true);
+		
 		
 		switchEditable.addValueChangeListener
 		(
@@ -302,7 +306,6 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 					}
 			}
 		);
-		switchEditable.setImmediate(true);
 		
 		editExistingDiary.addComponent(switchEditable);
 		editExistingDiary.addComponent(table);
@@ -321,24 +324,22 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 
 			tableEditTraining.addItem(new Object[] {description, choosedDiary},j);
 		}
-		/*End of adding rows to table*/
-		
 	
-		
-		final CheckBox switchEditableTrainingTable = new CheckBox("Editable");
-		this.switchEditableTrainingTable.addValueChangeListener(
-		new Property.ValueChangeListener()
+		final CheckBox switchEditableTrainingTable = new CheckBox("Edit training");
+		switchEditableTrainingTable.addValueChangeListener(
+		new Property.ValueChangeListener() 
 		{
 			private static final long serialVersionUID = 1L;
 
 		@Override
 		public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
-			tableEditTraining.setEditable(((Boolean)event.getProperty()
-					.getValue()).booleanValue());
-			
+			// TODO Auto-generated method stub
+		
+			tableEditTraining.setEditable(((Boolean)event.getProperty().getValue()).booleanValue());
+					
 		}
 		});
-		switchEditable.setImmediate(true);
+		
 		
 		 verticalEditExistingTraining.addComponent(switchEditableTrainingTable);
 		 verticalEditExistingTraining.addComponent(tableEditTraining);
@@ -415,14 +416,28 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
         	  String sTrainingProgramName = trainingProgramName.getValue();
         	  String sNumberOfExcersises = numberOfExcersises.getValue();
         	  String sNumberOfSetsOfEachExcersise = numberOfSetsOfEachExcersise.getValue();
+      
+        	  
+        	  
+        	  
+        	  
+        	  
+        	  
+        	  
+        	  
+        	  
+        	  
+        	  
+        	  
         	  String sBreakBetweenSets = breakBetweenSets.getValue();
         	  String sTextFieldThirdTab = textfieldThirdTab.getValue();
         	  
         	  if (AddNewTrainingTemplate.fieldValidator(sTrainingProgramName, sNumberOfExcersises, sNumberOfSetsOfEachExcersise, sBreakBetweenSets, sTextFieldThirdTab, table2, window2)==true)
         	  {
         	  //(String trainingProgramName, String numberOfExcersises, String numberOfSets, String breakBetweenSets, Table table, Window window)
-	        	  AddNewTrainingTemplate.AddContentToEditableTrainingTemplate(sTrainingProgramName, sNumberOfExcersises, sNumberOfSetsOfEachExcersise, sBreakBetweenSets, sTextFieldThirdTab, table2, window2);
+	        	  AddNewTrainingTemplate.AddContentToEditableTrainingTemplate( sTrainingProgramName, sNumberOfExcersises, sNumberOfSetsOfEachExcersise, sBreakBetweenSets, sTextFieldThirdTab, table2, window2);
 	      		  UI.getCurrent().addWindow(window2);
+	      		  //successfullySavedTrainingTemplate,
         	  }
         	 else
         	  {
@@ -444,7 +459,16 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 		private static final long serialVersionUID = 1L;
 		public void buttonClick(ClickEvent event) 
 		  {
-			JavaScript.getCurrent().execute("alert('Test')");
+			
+			try
+			{
+				ButtonActions.saveChangesIntoEditedDiaries(table);
+			}
+			catch (ParseException e) 
+			{
+				log.debug(e.getCause(),e);
+				e.printStackTrace();
+			}
 		  }
 	  }
 	  ); 

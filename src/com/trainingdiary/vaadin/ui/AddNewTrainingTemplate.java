@@ -1,9 +1,5 @@
 package com.trainingdiary.vaadin.ui;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-
 import org.apache.log4j.Logger;
 
 import com.trainingdiary.ProgramType;
@@ -14,10 +10,8 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.Field.ValueChangeEvent;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Table;
-import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
 
 public class AddNewTrainingTemplate  extends CustomComponent implements View
@@ -26,12 +20,13 @@ public class AddNewTrainingTemplate  extends CustomComponent implements View
 	private static final long serialVersionUID = 1L;
 
 	static Logger log = Logger.getLogger(CreateNewAccountPopup.class);
-	  
+
     final Table table = new Table();
 
 	
-	public static void AddContentToEditableTrainingTemplate(final String trainingProgramName, final String numberOfExcersises, final String numberOfSets, final String breakBetweenSets, final String programDescription, final Table table, Window window)
+	public static void AddContentToEditableTrainingTemplate(/*final Notification successfullySavedTrainingTemplate,*/ final String trainingProgramName, final String numberOfExcersises, final String numberOfSets, final String breakBetweenSets, final String programDescription, final Table table, Window window)
 	{
+	
 	    Button generatePDF = new Button("Generate PDF");
 	    Button saveNewTrainingProgram = new Button("Save new training program");
 		FormLayout content = new FormLayout();
@@ -55,6 +50,9 @@ public class AddNewTrainingTemplate  extends CustomComponent implements View
 		final CheckBox switchEditable = new CheckBox("Editable");
 		switchEditable.addValueChangeListener(new Property.ValueChangeListener() 
 	    {
+		
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public void valueChange(
 					com.vaadin.data.Property.ValueChangeEvent event) {
@@ -70,14 +68,18 @@ public class AddNewTrainingTemplate  extends CustomComponent implements View
 		content.addComponent(saveNewTrainingProgram);
 		
 		//---------------------------------------------------------------------------------------------
+		
 		saveNewTrainingProgram.addClickListener(new Button.ClickListener()
 	      {
+
+			private static final long serialVersionUID = 1L;
 
 			@Override
 			public void buttonClick(ClickEvent event) 
 			{
 
 				ProgramType.SaveProgram(trainingProgramName, numberOfExcersises, numberOfSets, breakBetweenSets, programDescription);
+			
 			}
 		
 	      });

@@ -1,24 +1,29 @@
 package com.trainingdiary.tools;
 
+import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import com.ibm.icu.text.SimpleDateFormat;
 import com.trainingdiary.DiaryBean;
 import com.trainingdiary.ProgramType;
 import com.trainingdiary.Training;
 import com.trainingdiary.database.HibernateUtil;
+import com.vaadin.data.Property;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.RichTextArea;
+import com.vaadin.ui.Table;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 
@@ -145,20 +150,47 @@ public class ButtonActions extends CustomComponent
 		{
 			
 			String sProgramName=String.valueOf(selectedTrainingTemplate.get(nameOfTrainingProgram).getProgramName());
-			sTrainingDescriptionFieldContent=sTrainingDescriptionFieldContent + sProgramName;   //we add to sTrainingDescriptionField program name
+			sTrainingDescriptionFieldContent=sTrainingDescriptionFieldContent + sProgramName + "<br><br>";   //we add to sTrainingDescriptionField program name
 			
 			String sNumberOfSets=String.valueOf(selectedTrainingTemplate.get(nameOfTrainingProgram).getNumberOfSets());
-			sTrainingDescriptionFieldContent=sTrainingDescriptionFieldContent + sNumberOfSets;  //we add to sTrainingDescriptionField number of sets
+			sTrainingDescriptionFieldContent=sTrainingDescriptionFieldContent + sNumberOfSets + "<br><br>";  //we add to sTrainingDescriptionField number of sets
 			
 			String sSelectedTraining=String.valueOf(selectedTrainingTemplate.get(nameOfTrainingProgram).getProgramDescription());
-			sTrainingDescriptionFieldContent=sTrainingDescriptionFieldContent + sSelectedTraining;
+			sTrainingDescriptionFieldContent=sTrainingDescriptionFieldContent + sSelectedTraining + "<br><br>";
 			
 			String sGetTrainingType=String.valueOf(selectedTrainingTemplate.get(nameOfTrainingProgram).getTrainingType());
-			sTrainingDescriptionFieldContent=sTrainingDescriptionFieldContent + sGetTrainingType;
+			sTrainingDescriptionFieldContent=sTrainingDescriptionFieldContent + sGetTrainingType + "<br><br>";
 			
 		}
 		
 		return sTrainingDescriptionFieldContent;
+	}
+	
+	@SuppressWarnings("deprecation")
+	public static void saveChangesIntoEditedDiaries(Table table) throws ParseException // function called from Button listener (Save changes in existed diary)
+	{
+	
+		for (Object id : table.getItemIds()) 
+		{
+            // Get the Property representing a cell
+            Property nameProperty = table.getContainerProperty(id,"Name");
+            Property dateProperty = table.getContainerProperty(id, "Date");
+            Property trainingProgramProperty = table.getContainerProperty(id, "Training Program");
+            Property descriptionProperty = table.getContainerProperty(id, "Description");
+            
+            // Get the value of the Property
+            Object nameValue = nameProperty.getValue();
+            Object dateValue = dateProperty.getValue();
+            Object trainingProgramValue = trainingProgramProperty.getValue();
+            Object descriptionValue = descriptionProperty.getValue();
+            
+            //--
+            String string = String.valueOf(dateValue);
+            string=string.substring(0, 9);
+            Date date = new SimpleDateFormat("yyyy, mm, dd", Locale.ENGLISH).parse(string);
+            //--
+          DiaryBean.UpdateDiary(String.valueOf(trainingProgramValue), date , String.valueOf(descriptionValue), String.valueOf(nameValue));
+        }
 	}
 	
 }

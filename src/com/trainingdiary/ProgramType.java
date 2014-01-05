@@ -200,6 +200,8 @@ public class ProgramType implements Serializable
 	          transaction = session.beginTransaction();
 	          
 	          ProgramType pm = new ProgramType();
+	          pm.setTrainingProgramName(trainingProgramName);
+	          pm.setTrainingType(trainingProgramName);
 	          pm.setProgramName(trainingProgramName);
 	          pm.setNumberOfExcersises(numberOfExcersises);
 	          pm.setNumberOfSets(numberOfSets);

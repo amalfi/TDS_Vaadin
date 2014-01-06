@@ -2,6 +2,7 @@ package com.trainingdiary;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -21,6 +22,8 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import com.trainingdiary.database.HibernateUtil;
+import com.trainingdiary.vaadin.ui.SimpleLoginView;
+import com.vaadin.ui.Notification;
 
 
 @javax.persistence.Entity
@@ -40,11 +43,6 @@ static Logger log = Logger.getLogger(Training.class);
   
   public String description;
   public String choosedDiary;
-  
-
-  
-  
-  
   public HashMap<String, DiaryBean> allDiaries = new HashMap<String,DiaryBean>();
   public static ArrayList<Training> allTrainings = new ArrayList<Training>();
 //------------------------------------------------------------------------------
@@ -98,37 +96,66 @@ public void setAllDiaries(HashMap<String, DiaryBean> allDiaries) {
 	this.allDiaries = allDiaries;
 }
 
-
-	//------------------------------------------------------------
-	public static void SaveTraining(String choosedDiary, String description) //method which save new Training 
+//-----------------------------------------------------------
+public static void UpdateTrainings(Integer id, String description/*, String choosedDiary*/) //method which save new Training 
+{
+    Session session = HibernateUtil.getSessionFactory().openSession();
+    Transaction transaction = null;
+    try 
     {
-	       Session session = HibernateUtil.getSessionFactory().openSession();
-	       Transaction transaction = null;
-	       try 
-	       {
-	       log.debug("Session.beginTransaction process started");   
-	          transaction = session.beginTransaction();
-	          Training training = new Training();
-	          training.setChoosedDiary(choosedDiary);
-	          training.setDescription(description);
-	          session.save(training);
-	           transaction.commit();
-	       log.debug("Records inserted sucessessfully");
-	       
-	       } catch (HibernateException e) 
-	       
-	       {
-	           transaction.rollback();
-	           e.printStackTrace();
-	           log.debug(e.getMessage());
-	       } 
-	       
-	       finally 
-	       {
-	           session.close();
-	       }
-		
+    log.debug("Session.beginTransaction process started");   
+       transaction = session.beginTransaction();
+       Training training = new Training();
+       training.setId(id);
+       training.setDescription(description);
+       //training.setChoosedDiary(choosedDiary);
+       session.update(training);
+        transaction.commit();
+    log.debug("Records updated sucessessfully");
+    
+    } catch (HibernateException e) 
+    
+    {
+        transaction.rollback();
+        e.printStackTrace();
+        log.debug(e.getMessage());
+    } 
+    
+    finally 
+    {
+        session.close();
     }
+}  
+//------------------------------------------------------------
+public static void SaveTraining(String choosedDiary, String description) //method which save new Training 
+{
+       Session session = HibernateUtil.getSessionFactory().openSession();
+       Transaction transaction = null;
+       try 
+       {
+       log.debug("Session.beginTransaction process started");   
+          transaction = session.beginTransaction();
+          Training training = new Training();
+          training.setChoosedDiary(choosedDiary);
+          training.setDescription(description);
+          session.save(training);
+           transaction.commit();
+       log.debug("Records inserted sucessessfully");
+       
+       } catch (HibernateException e) 
+       
+       {
+           transaction.rollback();
+           e.printStackTrace();
+           log.debug(e.getMessage());
+       } 
+       
+       finally 
+       {
+           session.close();
+       }
+	
+}
 	
 	public HashMap<String,DiaryBean> getLoadDiaries()
 	{

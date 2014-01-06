@@ -312,6 +312,8 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 		editExistingDiary.addComponent(saveChangesInEditedDiary);
     
 //******************************************************************END OF EDIT EXSITING DIARY*********************************************************************
+//******************************************************************EDIT EXSITING TRAINING*********************************************************************
+		tableEditTraining.addContainerProperty("Id", Integer.class, null);
 		tableEditTraining.addContainerProperty("Description", String.class, null);
 		tableEditTraining.addContainerProperty("Choosed Diary", String.class, null);
 		
@@ -319,10 +321,11 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 		
 		for(int j=0; j<treningi.size(); j++)
 		{
+			Integer id = treningi.get(j).getId();
 			String description = String.valueOf(treningi.get(j).getDescription());
 			String choosedDiary = String.valueOf(treningi.get(j).getChoosedDiary());
-
-			tableEditTraining.addItem(new Object[] {description, choosedDiary},j);
+			
+			tableEditTraining.addItem(new Object[] {id,description, choosedDiary},j);
 		}
 	
 		final CheckBox switchEditableTrainingTable = new CheckBox("Edit training");
@@ -332,9 +335,8 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 			private static final long serialVersionUID = 1L;
 
 		@Override
-		public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
-			// TODO Auto-generated method stub
-		
+		public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) 
+		{		
 			tableEditTraining.setEditable(((Boolean)event.getProperty().getValue()).booleanValue());
 					
 		}
@@ -345,9 +347,26 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 		 verticalEditExistingTraining.addComponent(tableEditTraining);
 		 verticalEditExistingTraining.addComponent(saveChangesInEditedTraining);
 		
-//******************************************************************EDIT EXSITING TRAINING*********************************************************************
 
-		
+
+		 saveChangesInEditedTraining.addClickListener(new Button.ClickListener() 
+		  {
+			private static final long serialVersionUID = 1L;
+			public void buttonClick(ClickEvent event) 
+			  {
+				
+				try
+				{
+					ButtonActions.saveChangesIntoEditedTrainings(table);
+				}
+				catch (ParseException e) 
+				{
+					log.debug(e.getCause(),e);
+					e.printStackTrace();
+				}
+			  }
+		  }
+		  ); 
 		
 //******************************************************************END OF EDIT EXSITING TRAINING********************************************************************
 
@@ -416,19 +435,6 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
         	  String sTrainingProgramName = trainingProgramName.getValue();
         	  String sNumberOfExcersises = numberOfExcersises.getValue();
         	  String sNumberOfSetsOfEachExcersise = numberOfSetsOfEachExcersise.getValue();
-      
-        	  
-        	  
-        	  
-        	  
-        	  
-        	  
-        	  
-        	  
-        	  
-        	  
-        	  
-        	  
         	  String sBreakBetweenSets = breakBetweenSets.getValue();
         	  String sTextFieldThirdTab = textfieldThirdTab.getValue();
         	  

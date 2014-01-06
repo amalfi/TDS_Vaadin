@@ -202,21 +202,22 @@ public class ButtonActions extends CustomComponent
             // Get the Property representing a cell
 			Property idProperty = table.getContainerProperty(id,"Id");
             Property descriptionProperty = table.getContainerProperty(id,"Description");
-            //Property choosedDiaryProperty = table.getContainerProperty(id, "Choosed Diary");
+            Property choosedDiaryProperty = table.getContainerProperty(id, "Choosed Diary");
     
             // Get the value of the Property
             Object idValue = idProperty.getValue();
             Object descriptionValue = descriptionProperty.getValue();
-            //Object choosedDiaryValue = choosedDiaryProperty.getValue();        
+            Object choosedDiaryValue = choosedDiaryProperty.getValue();        
             //--
             Integer Id = Integer.valueOf(idValue.toString());
             String sDescription = String.valueOf(descriptionValue);
-            //String sChoosedDiary = String.valueOf(choosedDiaryValue);
+            String sChoosedDiary = String.valueOf(choosedDiaryValue);
             
-            log.debug("Wartosci pobrane z tabeli 'Edit training " + sDescription + " , " /*+ sChoosedDiary*/);
+            log.debug("Wartosci pobrane z tabeli 'Edit training " + sDescription);
             
-          Training.UpdateTrainings(Id,sDescription/*, sChoosedDiary*/);
-        }
+          Training.UpdateTrainings(Id,sDescription, sChoosedDiary);
+        
+		}
 	}
 	
 	

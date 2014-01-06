@@ -97,7 +97,7 @@ public void setAllDiaries(HashMap<String, DiaryBean> allDiaries) {
 }
 
 //-----------------------------------------------------------
-public static void UpdateTrainings(Integer id, String description/*, String choosedDiary*/) //method which save new Training 
+public static void UpdateTrainings(Integer id, String description, String choosedDiary) //method which save new Training 
 {
     Session session = HibernateUtil.getSessionFactory().openSession();
     Transaction transaction = null;
@@ -108,7 +108,7 @@ public static void UpdateTrainings(Integer id, String description/*, String choo
        Training training = new Training();
        training.setId(id);
        training.setDescription(description);
-       //training.setChoosedDiary(choosedDiary);
+       training.setChoosedDiary(choosedDiary);
        session.update(training);
         transaction.commit();
     log.debug("Records updated sucessessfully");

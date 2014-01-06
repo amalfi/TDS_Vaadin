@@ -46,8 +46,9 @@ public class CreateNewAccountPopup extends CustomComponent implements View
 		final TextField login = new TextField("User login"); //pole z inputem do loginu
 		final PasswordField password = new PasswordField("User password"); //pole z inputem do has³a
 	    Button savePerson = new Button("Create account"); 
-	    final Notification notification = new Notification("Save Successfull","User has been added correctly",Notification.TYPE_HUMANIZED_MESSAGE);
-	    
+	    @SuppressWarnings("deprecation")
+		final Notification notification = new Notification("Save Successfull","User has been added correctly",Notification.TYPE_HUMANIZED_MESSAGE);
+	    final Notification userAlreadyExistNotification = new Notification("User with this name already exist ! Choose antoher name", Notification.TYPE_ERROR_MESSAGE);
 	    
 	    savePerson.addClickListener(new Button.ClickListener() 
 	    {
@@ -55,15 +56,13 @@ public class CreateNewAccountPopup extends CustomComponent implements View
 
 			public void buttonClick(ClickEvent event) 
 			{
-
-				ProgressBar bar = new ProgressBar();
-				bar.setVisible(true);
-				bar.setEnabled(true);
-				bar.setIndeterminate(true);
-				
 				if(User.SaveUser(login.getValue(), password.getValue()).equals("Exist"))
 				{
-					Notification.show("Error","User with this login already exist",Notification.Type.WARNING_MESSAGE);	
+					
+					userAlreadyExistNotification.setDelayMsec(600);
+					userAlreadyExistNotification.setPosition(Position.MIDDLE_CENTER);
+					userAlreadyExistNotification.show(Page.getCurrent());
+
 				}
 				else
 				{

@@ -51,7 +51,7 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 	Notification notification2 = new Notification("At least one of required fields is empty",Notification.TYPE_WARNING_MESSAGE);
 	@SuppressWarnings("deprecation")
 	Notification emptyTrainingTemplateNotification = new Notification("Training template list shouldnt be empty",Notification.TYPE_ERROR_MESSAGE);
-	//Notification successfullySavedTrainingTemplate = new Notification("Training template saving successfully",Notification.TYPE_HUMANIZED_MESSAGE);
+	Notification successfullEditedDiaryNotification = new Notification("Training edited successfully",Notification.TYPE_HUMANIZED_MESSAGE);
 	
 	final Window window2 = new Window();
     Table table2= new Table();
@@ -337,8 +337,7 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 		@Override
 		public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) 
 		{		
-			tableEditTraining.setEditable(((Boolean)event.getProperty().getValue()).booleanValue());
-					
+			tableEditTraining.setEditable(((Boolean)event.getProperty().getValue()).booleanValue());		
 		}
 		});
 		
@@ -357,7 +356,7 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 				
 				try
 				{
-					ButtonActions.saveChangesIntoEditedTrainings(table);
+					ButtonActions.saveChangesIntoEditedTrainings(tableEditTraining);
 				}
 				catch (ParseException e) 
 				{
@@ -383,7 +382,12 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 		private static final long serialVersionUID = 1L;
 		public void buttonClick(ClickEvent event) 
 		  { 
-			  ButtonActions.SaveNewDiaryAction(button, select, date, textfield, area);
+			  
+			ButtonActions.SaveNewDiaryAction(button, select, date, textfield, area);
+		  	successfullEditedDiaryNotification.setDelayMsec(600);
+		  	successfullEditedDiaryNotification.setPosition(Position.MIDDLE_CENTER);
+		  	successfullEditedDiaryNotification.show(Page.getCurrent());
+    	  
 		  }
 	  }
 	  );
@@ -453,7 +457,7 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 					notification2.show(Page.getCurrent());
         	  }
         	  
-              }
+      }
       }
       ); 
 	  

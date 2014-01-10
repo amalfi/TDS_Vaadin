@@ -1,6 +1,8 @@
 package com.trainingdiary;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -21,7 +23,9 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import com.google.appengine.repackaged.com.google.common.base.Functions;
 import com.trainingdiary.database.HibernateUtil;
+import com.trainingdiary.tools.OtherFunctions;
 import com.trainingdiary.vaadin.ui.SimpleLoginView;
 import com.vaadin.ui.Notification;
 
@@ -43,16 +47,31 @@ static Logger log = Logger.getLogger(Training.class);
   
   public String description;
   public String choosedDiary;
+  public Date trainingDate;
   public HashMap<String, DiaryBean> allDiaries = new HashMap<String,DiaryBean>();
   public static ArrayList<Training> allTrainings = new ArrayList<Training>();
-//------------------------------------------------------------------------------
-/*public Training()
-{
-	allTrainings=LoadTrainings();
-}
-*/
-
+  public static ArrayList<Training> allTrainingsFromTable = new ArrayList<Training>();
   
+//------------------------------------------------------------------------------
+  public static ArrayList<Training> getAllTrainingsFromTable() {
+	return allTrainingsFromTable;
+}
+
+
+public static void setAllTrainingsFromTable(
+		ArrayList<Training> allTrainingsFromTable) {
+	Training.allTrainingsFromTable = allTrainingsFromTable;
+}
+  
+public Date getTrainingDate() {
+	return trainingDate;
+}
+
+public void setTrainingDate(Date trainingDate) {
+	this.trainingDate = trainingDate;
+}
+
+
 public ArrayList<Training> getAllTrainings() 
 {
 	return allTrainings;
@@ -60,7 +79,7 @@ public ArrayList<Training> getAllTrainings()
 
 
 public void setAllTrainings(ArrayList<Training> allTrainings) {
-	this.allTrainings = allTrainings;
+	Training.allTrainings = allTrainings;
 }
 
 public Integer getId() {
@@ -127,7 +146,7 @@ public static void UpdateTrainings(Integer id, String description, String choose
     }
 }  
 //------------------------------------------------------------
-public static void SaveTraining(String choosedDiary, String description) //method which save new Training 
+public static void SaveTraining(String choosedDiary, String description, Date trainingDate) throws ParseException //method which save new Training 
 {
        Session session = HibernateUtil.getSessionFactory().openSession();
        Transaction transaction = null;
@@ -136,8 +155,10 @@ public static void SaveTraining(String choosedDiary, String description) //metho
        log.debug("Session.beginTransaction process started");   
           transaction = session.beginTransaction();
           Training training = new Training();
+          
           training.setChoosedDiary(choosedDiary);
           training.setDescription(description);
+		  training.setTrainingDate(trainingDate);
           session.save(training);
            transaction.commit();
        log.debug("Records inserted sucessessfully");
@@ -206,11 +227,11 @@ public static void SaveTraining(String choosedDiary, String description) //metho
         try 
         { 
             transaction = session.beginTransaction();
-            List programtypes = session.createQuery("from Training").list(); //is worth to remember (common mistake) - when you use want to select from table, use bean name, not table name
-            for (Iterator iterator = programtypes.iterator(); iterator.hasNext();)
+            List trainings = session.createQuery("from Training").list(); //is worth to remember (common mistake) - when you use want to select from table, use bean name, not table name
+            for (Iterator iterator = trainings.iterator(); iterator.hasNext();)
             {
                 Training training = (Training) iterator.next();
-                allTrainings.add(training);
+                allTrainingsFromTable.add(training);
                 log.debug("Currently loaded training"+ training.getDescription().toString());
             }          	
             transaction.commit();
@@ -225,7 +246,7 @@ public static void SaveTraining(String choosedDiary, String description) //metho
         {
             session.close();
         }
-		return allTrainings;
+		return allTrainingsFromTable;
 	}
 	
 	

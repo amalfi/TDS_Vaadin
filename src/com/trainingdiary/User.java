@@ -49,7 +49,7 @@ public class User implements Serializable
 
 
 
-	public static String getsUserName() {
+	public static String getsUserName()  {
 		return sUserName;
 	}
 	

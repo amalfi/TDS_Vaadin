@@ -145,7 +145,7 @@ public class DiaryBean implements Serializable
             List checkingList = session.createQuery("from DiaryBean").list(); //is worth to remember (common mistake) - when you use want to select from table, use bean name, not table name
             for (Iterator iterator = checkingList.iterator(); iterator.hasNext();)
             {
-              if(statement==false)
+              if(statement==false)	
               	{
             	DiaryBean diary = (DiaryBean) iterator.next();
                  		String currentDiaryName=String.valueOf(diary.getNameOfDiary());
@@ -172,50 +172,42 @@ public class DiaryBean implements Serializable
 	}
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	public static void UpdateDiary(String programType, Date diaryCreationDate, String diaryDescription, String nameOfDiary)
+	public static void UpdateDiary(Integer id, String programType, Date diaryCreationDate, String diaryDescription, String nameOfDiary)
 	{
 	    Session session = HibernateUtil.getSessionFactory().openSession();
 	       Transaction transaction = null;
-	       try 
-	       {
+       try 
+       {
 	    	 
-	       log.debug("Session.beginTransaction process started");
-	          transaction = session.beginTransaction();
-	          DiaryBean diaryBean = new DiaryBean();
-	       //log.debug("Setting properties of new diary : "+choosedTrainingPlan+" , " + diaryCreationDate + ", " + diaryDescription + ", " + nameOfDiary);
-	          diaryBean.setChoosedTrainingPlan(programType/*programType.getProgramName()*/);
-	          diaryBean.setDiaryCreationDate(diaryCreationDate);
-	          diaryBean.setDiaryDescription(diaryDescription);
-	          diaryBean.setNameOfDiary(nameOfDiary);
-	          diaryBean.setCurrentDiaryUser(String.valueOf(SimpleLoginView.currentLoadedUser));
-	          //-------------------------------------------------------------
-	          log.debug("Sprawdzam czy dziennik o danej nazwie juz istnieje");
-	          //-------------------------------------------------------------
-	          if(checkIfDiaryExistInDatabase(session, transaction, nameOfDiary)==true)
- 		  { 
-	           session.update(diaryBean);
-	           transaction.commit();
-	           log.debug("Diary created succesfully");
- 		  }
-	          else
-	          {
-	        	  Notification.show("Error","Diary with this cannot be update because it doesnt exist",Notification.Type.WARNING_MESSAGE);	
-	          }
-
-			
-	       } 
-	       catch (HibernateException e) 
+	      log.debug("Session.beginTransaction process started");
+          transaction = session.beginTransaction();
+          DiaryBean diaryBean = new DiaryBean();
+       //log.debug("Setting properties of new diary : "+choosedTrainingPlan+" , " + diaryCreationDate + ", " + diaryDescription + ", " + nameOfDiary);
+          diaryBean.setId(id);
+          diaryBean.setChoosedTrainingPlan(programType);
+          diaryBean.setDiaryCreationDate(diaryCreationDate);
+          diaryBean.setDiaryDescription(diaryDescription);
+          diaryBean.setNameOfDiary(nameOfDiary);
+          diaryBean.setCurrentDiaryUser(String.valueOf(SimpleLoginView.currentLoadedUser));
+          //-------------------------------------------------------------
+          log.debug("Sprawdzam czy dziennik o danej nazwie juz istnieje");
+          //-------------------------------------------------------------
+           session.update(diaryBean);
+           transaction.commit();
+           log.debug("Diary updated succesfully");
+       } 
+       catch (HibernateException e) 
 	       
-	       {
+       {
 	           transaction.rollback();
 	           e.printStackTrace();
 	           log.debug(e.getMessage());
-	       } 
+       } 
 	       
-	       finally 
-	       {
+       finally 
+       {
 	           session.close();
-	       }
+       }
 	}
 	
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

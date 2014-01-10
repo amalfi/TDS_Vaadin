@@ -51,8 +51,9 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 	Notification notification2 = new Notification("At least one of required fields is empty",Notification.TYPE_WARNING_MESSAGE);
 	@SuppressWarnings("deprecation")
 	Notification emptyTrainingTemplateNotification = new Notification("Training template list shouldnt be empty",Notification.TYPE_ERROR_MESSAGE);
+	Notification successfullEditedTrainingNotification = new Notification("Training edited successfully",Notification.TYPE_HUMANIZED_MESSAGE);
 	Notification successfullEditedDiaryNotification = new Notification("Training edited successfully",Notification.TYPE_HUMANIZED_MESSAGE);
-	
+	Notification successfullAddedTrainingToDiary = new Notification("Training added to diary successfully",Notification.TYPE_HUMANIZED_MESSAGE);	
 	final Window window2 = new Window();
     Table table2= new Table();
 //------------------------------------------- ------------------------------------------- Layouts in each tab 
@@ -98,13 +99,14 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
   String sDescription;
   
 //------------------------------------------- -------------------------------------------Components of SecondTab
+  
   ComboBox selectTrainingProgramInSecondTab = new ComboBox("Training programs list");
   com.vaadin.ui.RichTextArea textfieldSecondTab = new com.vaadin.ui.RichTextArea("Training Description");
   ComboBox selectSecondTab = new ComboBox("Training diaries list");
+  DateField dateOfTraining = new DateField("Date of Training");
   Button loadDiaryTemplate = new Button("Load diary template");
   Button buttonInSecondTab = new Button("Add new training");
-  
-  
+
 //--------------------------------------------
   
 //------------------------------------------- -------------------------------------------Components of ThirdTab
@@ -212,10 +214,7 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 	  }
 	  //-------------------------------------------
 	  
-	  DiaryBean diarybean = new DiaryBean();
-	  	ArrayList<DiaryBean> dzienniki = diarybean.loadDiariesArray();
-	  	
-	  	
+	  DiaryBean diarybean = new DiaryBean();  	
   	 verticalAddNewTrainingIntoExistingDiary.addComponent(select);
  	  verticalAddNewTrainingIntoExistingDiary.setComponentAlignment(select, Alignment.MIDDLE_LEFT);
 	 
@@ -229,6 +228,9 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 	  
 	  verticalAddNewTrainingIntoExistingDiary.addComponent(selectSecondTab);
 	  verticalAddNewTrainingIntoExistingDiary.setComponentAlignment(selectSecondTab, Alignment.MIDDLE_LEFT);
+	  
+	  verticalAddNewTrainingIntoExistingDiary.addComponent(dateOfTraining);
+	  verticalAddNewTrainingIntoExistingDiary.setComponentAlignment(dateOfTraining, Alignment.MIDDLE_LEFT);
 	  
 	  verticalAddNewTrainingIntoExistingDiary.addComponent(buttonInSecondTab);
 	  verticalAddNewTrainingIntoExistingDiary.setComponentAlignment(buttonInSecondTab, Alignment.MIDDLE_CENTER);
@@ -267,11 +269,12 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 	  //   viewLayout.setComponentAlignment(fields, Alignment.MIDDLE_CENTER);
 	  
 //******************************************************************END OF NEW TRAINING PROGRAM*********************************************************************
-	
-		
 //******************************************************************EDIT EXSITING DIARY*********************************************************************
 		/* Define the names and data types of columns.
 		* The "default value" parameter is meaningless here. */
+		 ArrayList<DiaryBean> dzienniki = diarybean.loadDiariesArray();
+		
+		table.addContainerProperty("Id", Integer.class, null);
 		table.addContainerProperty("Name", String.class, null);
 		table.addContainerProperty("Date", String.class, null);
 		table.addContainerProperty("Training Program", String.class, null);
@@ -279,12 +282,13 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 		
 		for(int j=0; j<dzienniki.size(); j++)	
 		{
+			Integer id = Integer.valueOf(String.valueOf(dzienniki.get(j).getId()));
 			String nameOfDiary = String.valueOf(dzienniki.get(j).getNameOfDiary());
 			String diaryCreationDate = String.valueOf(dzienniki.get(j).getDiaryCreationDate());
 			String choosedDiary = String.valueOf(dzienniki.get(j).getChoosedTrainingPlan());
 			String diaryDescription =  String.valueOf(dzienniki.get(j).getDiaryDescription());	
 			
-			table.addItem(new Object[] {nameOfDiary, diaryCreationDate , diaryDescription, choosedDiary ,},j);
+			table.addItem(new Object[] {id, nameOfDiary, diaryCreationDate , diaryDescription, choosedDiary ,},j);
 		}
 		/*End of adding rows to table*/
 
@@ -313,12 +317,12 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
     
 //******************************************************************END OF EDIT EXSITING DIARY*********************************************************************
 //******************************************************************EDIT EXSITING TRAINING*********************************************************************
+		ArrayList<Training>treningi = Training.LoadTrainings();	
+		
 		tableEditTraining.addContainerProperty("Id", Integer.class, null);
 		tableEditTraining.addContainerProperty("Description", String.class, null);
 		tableEditTraining.addContainerProperty("Choosed Diary", String.class, null);
-		
-		ArrayList<Training>treningi = Training.LoadTrainings();		
-		
+		//tableEditTraining.addContainerProperty("Training date" , Date.class, null);
 		for(int j=0; j<treningi.size(); j++)
 		{
 			Integer id = treningi.get(j).getId();
@@ -327,7 +331,7 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 			
 			tableEditTraining.addItem(new Object[] {id,description, choosedDiary},j);
 		}
-	
+	 
 		final CheckBox switchEditableTrainingTable = new CheckBox("Edit training");
 		switchEditableTrainingTable.addValueChangeListener(
 		new Property.ValueChangeListener() 
@@ -357,6 +361,10 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 				try
 				{
 					ButtonActions.saveChangesIntoEditedTrainings(tableEditTraining);
+					successfullEditedTrainingNotification.setDelayMsec(600);
+					successfullEditedTrainingNotification.setPosition(Position.MIDDLE_CENTER);
+					successfullEditedTrainingNotification.show(Page.getCurrent());
+
 				}
 				catch (ParseException e) 
 				{
@@ -384,9 +392,9 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 		  { 
 			  
 			ButtonActions.SaveNewDiaryAction(button, select, date, textfield, area);
-		  	successfullEditedDiaryNotification.setDelayMsec(600);
-		  	successfullEditedDiaryNotification.setPosition(Position.MIDDLE_CENTER);
-		  	successfullEditedDiaryNotification.show(Page.getCurrent());
+		  	successfullEditedTrainingNotification.setDelayMsec(600);
+		  	successfullEditedTrainingNotification.setPosition(Position.MIDDLE_CENTER);
+		  	successfullEditedTrainingNotification.show(Page.getCurrent());
     	  
 		  }
 	  }
@@ -421,7 +429,11 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 		private static final long serialVersionUID = 1L;
 		public void buttonClick(ClickEvent event) 
 		  {
-			  ButtonActions.SaveNewTrainingIntoExistingDiaryAction(selectSecondTab, textfieldSecondTab);
+			  ButtonActions.SaveNewTrainingIntoExistingDiaryAction(selectSecondTab, textfieldSecondTab, dateOfTraining);
+			    
+			    successfullAddedTrainingToDiary.setDelayMsec(600);
+			    successfullAddedTrainingToDiary.setPosition(Position.MIDDLE_CENTER);
+			    successfullAddedTrainingToDiary.show(Page.getCurrent());
 		  }
 	  }
 	  ); 
@@ -473,6 +485,9 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 			try
 			{
 				ButtonActions.saveChangesIntoEditedDiaries(table);
+				successfullEditedDiaryNotification.setDelayMsec(600);
+				successfullEditedDiaryNotification.setPosition(Position.MIDDLE_CENTER);
+				successfullEditedDiaryNotification.show(Page.getCurrent());
 			}
 			catch (ParseException e) 
 			{

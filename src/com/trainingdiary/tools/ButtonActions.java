@@ -56,15 +56,16 @@ public class ButtonActions extends CustomComponent
 				 }
 	  }
 	
-	public static void SaveNewTrainingIntoExistingDiaryAction(final ComboBox selectSecondTab, final RichTextArea textfieldSecondTab)
+	public static void SaveNewTrainingIntoExistingDiaryAction(final ComboBox selectSecondTab, final RichTextArea textfieldSecondTab, DateField dateOfTraining)
 	{
 		try
 		 {
 			  log.debug("Now i'm getting values of fields in UI - Add new training into existing diary tab");
 			  String choosedDiary = String.valueOf(selectSecondTab.getValue());
 			  String description = String.valueOf(textfieldSecondTab.getValue());
+			  Date dDate = dateOfTraining.getValue();
 			  log.debug("Now i try to save date ");
-			  Training.SaveTraining(choosedDiary, description);
+			  Training.SaveTraining(choosedDiary, description, dDate);
 		 }
 		 catch(Exception e)
 		 {
@@ -173,12 +174,14 @@ public class ButtonActions extends CustomComponent
 		for (Object id : table.getItemIds()) 
 		{
             // Get the Property representing a cell
+			Property idProperty = table.getContainerProperty(id, "Id");
             Property nameProperty = table.getContainerProperty(id,"Name");
             Property dateProperty = table.getContainerProperty(id, "Date");
             Property trainingProgramProperty = table.getContainerProperty(id, "Training Program");
             Property descriptionProperty = table.getContainerProperty(id, "Description");
             
             // Get the value of the Property
+            Object idValue = idProperty.getValue();
             Object nameValue = nameProperty.getValue();
             Object dateValue = dateProperty.getValue();
             Object trainingProgramValue = trainingProgramProperty.getValue();
@@ -187,9 +190,9 @@ public class ButtonActions extends CustomComponent
             //--
             String string = String.valueOf(dateValue);
             string=string.substring(0, 9);
-            Date date = new SimpleDateFormat("yyyy, mm, dd", Locale.ENGLISH).parse(string);
+            Date date = new SimpleDateFormat("MM-dd-yyyy", Locale.ENGLISH).parse(string);
             //--
-          DiaryBean.UpdateDiary(String.valueOf(trainingProgramValue), date , String.valueOf(descriptionValue), String.valueOf(nameValue));
+          DiaryBean.UpdateDiary(Integer.valueOf(String.valueOf(idValue)), String.valueOf(trainingProgramValue), date , String.valueOf(descriptionValue), String.valueOf(nameValue));
         }
 	}
 	

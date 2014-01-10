@@ -22,8 +22,10 @@
 			<column name="choosedDiary" />
 		</property>	
 		
+		<property name="trainingDate">
+			<column name="trainingDate" />
+		</property>	
 
-		
 	</class>
 
 </hibernate-mapping>

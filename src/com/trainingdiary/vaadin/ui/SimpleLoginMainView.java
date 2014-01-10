@@ -4,6 +4,8 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import org.apache.log4j.Logger;
 
@@ -18,6 +20,7 @@ import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.Page;
 import com.vaadin.shared.Position;
+import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -25,12 +28,11 @@ import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.DateField;
-import com.vaadin.ui.Field.ValueChangeEvent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
-import com.vaadin.ui.JavaScript;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.PopupDateField;
 import com.vaadin.ui.RichTextArea;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
@@ -47,16 +49,21 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 	public static final String NAME = "";
 	TabSheet tabsheet = new TabSheet();
 	Window window = new Window();
+	//---------------------------------------------------------------------------------------------------------------------------------------------------------------------Notifications
 	@SuppressWarnings("deprecation")
 	Notification notification2 = new Notification("At least one of required fields is empty",Notification.TYPE_WARNING_MESSAGE);
 	@SuppressWarnings("deprecation")
 	Notification emptyTrainingTemplateNotification = new Notification("Training template list shouldnt be empty",Notification.TYPE_ERROR_MESSAGE);
+	@SuppressWarnings("deprecation")
 	Notification successfullEditedTrainingNotification = new Notification("Training edited successfully",Notification.TYPE_HUMANIZED_MESSAGE);
+	@SuppressWarnings("deprecation")
 	Notification successfullEditedDiaryNotification = new Notification("Training edited successfully",Notification.TYPE_HUMANIZED_MESSAGE);
+	@SuppressWarnings("deprecation")
 	Notification successfullAddedTrainingToDiary = new Notification("Training added to diary successfully",Notification.TYPE_HUMANIZED_MESSAGE);	
+	//---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	final Window window2 = new Window();
     Table table2= new Table();
-//------------------------------------------- ------------------------------------------- Layouts in each tab 
+//-------------------------------------------------------------------------------------- Layouts in each tab 
 	
   VerticalLayout verticalViewCreateNewDiary = new VerticalLayout(); //VerticalLayout of 'CreateNewDiary' tab
   VerticalLayout verticalAddNewTrainingIntoExistingDiary = new VerticalLayout(); //VerticalLayout of 'Add new training into existing diary' tab
@@ -64,6 +71,7 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
   VerticalLayout verticalEditExistingTraining = new VerticalLayout();
   VerticalLayout editExistingDiary = new VerticalLayout();
   VerticalLayout logoutLayout = new VerticalLayout();
+  
 //--------------------------------------------------------------------------------------  Split panels to each tab (UserAccount)
 	
 	HorizontalSplitPanel verticalViewCreateNewDiarySplitPanel = new HorizontalSplitPanel();
@@ -103,7 +111,9 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
   ComboBox selectTrainingProgramInSecondTab = new ComboBox("Training programs list");
   com.vaadin.ui.RichTextArea textfieldSecondTab = new com.vaadin.ui.RichTextArea("Training Description");
   ComboBox selectSecondTab = new ComboBox("Training diaries list");
-  DateField dateOfTraining = new DateField("Date of Training");
+  //DateField dateOfTraining = new DateField("Date of Training"); //replaced with DatePicker with time in minutes
+  PopupDateField dateOfTraining = new PopupDateField("Date of Training");
+  
   Button loadDiaryTemplate = new Button("Load diary template");
   Button buttonInSecondTab = new Button("Add new training");
 
@@ -113,7 +123,7 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 
   TextField trainingProgramName = new TextField("Training program name");
   TextField numberOfExcersises = new TextField("Number of excersises");
-  TextField numberOfSetsOfEachExcersise = new TextField("Number of sets");
+  TextField numberOfSetsOfEachExcersise = new TextField("Number of sets per excersise (default)");
   TextField breakBetweenSets = new TextField("Break between sets");
   com.vaadin.ui.TextArea textfieldThirdTab = new com.vaadin.ui.TextArea("Traning program description");
   Button buttonInThirdTab = new Button("Add new training program");
@@ -401,10 +411,12 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 	  );
 
 //******************************************************************END OF Action of 'Save new diary' button ************************************************	 
-//******************************************************************Action of 'Add new training' button ************************************************	 
-	  //buttonInSecondTab
-	  
-	  //textfieldSecondTab
+//******************************************************************Action of 'Add new training' button ************************************************	
+	  dateOfTraining.setValue(new Date());
+	  dateOfTraining.setImmediate(true);
+	  dateOfTraining.setTimeZone(TimeZone.getTimeZone("UTC"));
+	  dateOfTraining.setLocale(Locale.US);
+	  dateOfTraining.setResolution(Resolution.MINUTE);
 	  
 	  loadDiaryTemplate.addClickListener(new Button.ClickListener() 
 	  {

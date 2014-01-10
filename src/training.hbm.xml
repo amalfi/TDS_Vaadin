@@ -8,12 +8,12 @@
 
 <hibernate-mapping>
 
-	<class name="com.trainingdiary.Training" table="trainings">
+	 <class name="com.trainingdiary.Training" table="trainings">
 		
 		<id name="id" type="int" column="id" >
 			<generator class="native"/>
 		</id>
-
+		
 		<property name="description">
 			<column name="description" />
 		</property>

@@ -220,10 +220,9 @@ public class DiaryBean implements Serializable
 	       try 
 	       {
 	    	 
-	       log.debug("Session.beginTransaction process started");
+	         log.debug("Session.beginTransaction process started");
 	          transaction = session.beginTransaction();
 	          DiaryBean diaryBean = new DiaryBean();
-	       //log.debug("Setting properties of new diary : "+choosedTrainingPlan+" , " + diaryCreationDate + ", " + diaryDescription + ", " + nameOfDiary);
 	          diaryBean.setChoosedTrainingPlan(programType/*programType.getProgramName()*/);
 	          diaryBean.setDiaryCreationDate(diaryCreationDate);
 	          diaryBean.setDiaryDescription(diaryDescription);

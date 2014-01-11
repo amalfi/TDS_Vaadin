@@ -51,7 +51,7 @@ public class SimpleLoginView extends CustomComponent implements View, Button.Cli
     public static String currentLoadedUser;
     
    // Button createnewAccountButton;
-    final Window window = new Window("Window");
+    final Window window = new Window("Create new TDS account");
   
     Table table = new Table();
 

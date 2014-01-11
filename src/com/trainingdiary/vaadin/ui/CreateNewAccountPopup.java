@@ -72,7 +72,7 @@ public class CreateNewAccountPopup extends CustomComponent implements View
 					notification.setPosition(Position.MIDDLE_CENTER);
 					notification.show(Page.getCurrent());
 				}
-			}
+			} 
 	    });
 	    
 	    

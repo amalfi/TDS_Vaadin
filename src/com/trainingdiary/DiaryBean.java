@@ -45,20 +45,18 @@ public class DiaryBean implements Serializable
     public String choosedDiary;
     boolean editable;
     private String currentDiaryUser;
-    
-    
+    private List<DiaryBean> diaryDescriptions;
 
-	public static HashMap<String, DiaryBean> getCurrentDiaries() {
+//---------------------------------------------------------
+//Lists of diaries properties 
+
+    public static HashMap<String, DiaryBean> getCurrentDiaries() {
 		return currentDiaries;
 	}
 	public static void setCurrentDiaries(HashMap<String, DiaryBean> currentDiaries) {
 		DiaryBean.currentDiaries = currentDiaries;
 	}
-
-	//---------------------------------------------------------
-//Lists of diaries properties 
-    private List<DiaryBean> diaryDescriptions;
-
+    
     public List<DiaryBean> getDiaryDescriptions() {
 		return diaryDescriptions;
 	}
@@ -71,7 +69,6 @@ public class DiaryBean implements Serializable
     @Column(columnDefinition = "MEDIUMINT NOT NULL AUTO_INCREMENT")
 	private Integer id;
 	
-   
 	public Integer getId() {
 		return id;
 	}
@@ -79,7 +76,6 @@ public class DiaryBean implements Serializable
 		this.id = id;
 	}
 	
-    
 	public String getCurrentDiaryUser() {
 		return currentDiaryUser;
 	}
@@ -87,7 +83,6 @@ public class DiaryBean implements Serializable
 		this.currentDiaryUser = currentDiaryUser;
 	}
 
-	
 	public String getChoosedDiary() {
 		return choosedDiary;
 	}
@@ -213,17 +208,18 @@ public class DiaryBean implements Serializable
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 		
 	
-	public static String SaveDiary(String programType, Date diaryCreationDate, String diaryDescription, String nameOfDiary) //method which save diary0++
+	public static boolean SaveDiary(String programType, Date diaryCreationDate, String diaryDescription, String nameOfDiary) //method which save diary0++
 	   {
 	       Session session = HibernateUtil.getSessionFactory().openSession();
 	       Transaction transaction = null;
+	       boolean exist=false;
 	       try 
 	       {
 	    	 
 	         log.debug("Session.beginTransaction process started");
 	          transaction = session.beginTransaction();
 	          DiaryBean diaryBean = new DiaryBean();
-	          diaryBean.setChoosedTrainingPlan(programType/*programType.getProgramName()*/);
+	          diaryBean.setChoosedTrainingPlan(programType);
 	          diaryBean.setDiaryCreationDate(diaryCreationDate);
 	          diaryBean.setDiaryDescription(diaryDescription);
 	          diaryBean.setNameOfDiary(nameOfDiary);
@@ -236,27 +232,24 @@ public class DiaryBean implements Serializable
 	           session.save(diaryBean);
 	           transaction.commit();
 	           log.debug("Diary created succesfully");
+	           
     		  }
 	          else
 	          {
-	        	  Notification.show("Error","Diary with this name already exist",Notification.Type.WARNING_MESSAGE);	
+	        	  exist=true;
 	          }
-
-			
 	       } 
 	       catch (HibernateException e) 
-	       
 	       {
 	           transaction.rollback();
 	           e.printStackTrace();
 	           log.debug(e.getMessage());
 	       } 
-	       
 	       finally 
 	       {
 	           session.close();
 	       }
-		return "";		  
+		return exist;		  
 			
 	   }
 

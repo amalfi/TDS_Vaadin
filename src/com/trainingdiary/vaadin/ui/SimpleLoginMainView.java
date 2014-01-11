@@ -55,11 +55,16 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 	@SuppressWarnings("deprecation")
 	Notification emptyTrainingTemplateNotification = new Notification("Training template list shouldnt be empty",Notification.TYPE_ERROR_MESSAGE);
 	@SuppressWarnings("deprecation")
-	Notification successfullEditedTrainingNotification = new Notification("Training edited successfully",Notification.TYPE_HUMANIZED_MESSAGE);
+	Notification successfullAddedDiaryNotification = new Notification("Training edited successfully",Notification.TYPE_HUMANIZED_MESSAGE);
 	@SuppressWarnings("deprecation")
-	Notification successfullEditedDiaryNotification = new Notification("Training edited successfully",Notification.TYPE_HUMANIZED_MESSAGE);
+	Notification successfullEditedDiaryNotification = new Notification("Diary edited successfully",Notification.TYPE_HUMANIZED_MESSAGE);
 	@SuppressWarnings("deprecation")
 	Notification successfullAddedTrainingToDiary = new Notification("Training added to diary successfully",Notification.TYPE_HUMANIZED_MESSAGE);	
+	@SuppressWarnings("deprecation")
+	Notification successfullEditedTrainingToDiary = new Notification("Training added to diary successfully",Notification.TYPE_HUMANIZED_MESSAGE);	
+	@SuppressWarnings("deprecation")
+	Notification diaryAlreadyExistNotification = new Notification("Diary with this name already exist",Notification.TYPE_ERROR_MESSAGE);	
+	
 	//---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	final Window window2 = new Window();
     Table table2= new Table();
@@ -84,7 +89,7 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 
   TextField textfield = new TextField("Name");
   ComboBox select = new ComboBox("Training Programs templates list");
-  DateField date = new DateField("Date");
+  DateField date = new DateField("Diary creation date");
   RichTextArea area = new RichTextArea("Description");
  // CustomTabSheet ctb = new CustomTabSheet();
   
@@ -371,9 +376,9 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 				try
 				{
 					ButtonActions.saveChangesIntoEditedTrainings(tableEditTraining);
-					successfullEditedTrainingNotification.setDelayMsec(600);
-					successfullEditedTrainingNotification.setPosition(Position.MIDDLE_CENTER);
-					successfullEditedTrainingNotification.show(Page.getCurrent());
+					successfullAddedDiaryNotification.setDelayMsec(600);
+					successfullAddedDiaryNotification.setPosition(Position.MIDDLE_CENTER);
+					successfullAddedDiaryNotification.show(Page.getCurrent());
 
 				}
 				catch (ParseException e) 
@@ -401,11 +406,19 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 		public void buttonClick(ClickEvent event) 
 		  { 
 			  
-			ButtonActions.SaveNewDiaryAction(button, select, date, textfield, area);
-		  	successfullEditedTrainingNotification.setDelayMsec(600);
-		  	successfullEditedTrainingNotification.setPosition(Position.MIDDLE_CENTER);
-		  	successfullEditedTrainingNotification.show(Page.getCurrent());
-    	  
+			if(ButtonActions.SaveNewDiaryAction(button, select, date, textfield, area)==false)
+			{
+			Notification.show("Diary saved successfully","Diary created successfully",Notification.Type.WARNING_MESSAGE);	
+		  	/*successfullAddedDiaryNotification.setDelayMsec(600);
+		  	successfullAddedDiaryNotification.setPosition(Position.MIDDLE_CENTER);
+		  	successfullAddedDiaryNotification.show(Page.getCurrent());*/
+			}
+			else if (ButtonActions.SaveNewDiaryAction(button, select, date, textfield, area)==true)
+			{
+			diaryAlreadyExistNotification.setDelayMsec(600);
+			diaryAlreadyExistNotification.setPosition(Position.MIDDLE_CENTER);
+			diaryAlreadyExistNotification.show(Page.getCurrent());
+			}
 		  }
 	  }
 	  );

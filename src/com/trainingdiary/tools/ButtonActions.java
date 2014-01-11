@@ -34,19 +34,19 @@ public class ButtonActions extends CustomComponent
 	static Logger log = Logger.getLogger(ButtonActions.class);
 	static HashMap<String,ProgramType> selectedTrainingTemplates  = new HashMap<String,ProgramType>();
 	
-	public static void SaveNewDiaryAction(Button button,  final ComboBox programType, final DateField date, final TextField textfield, final RichTextArea area )
-	{
-				 try
+	public static boolean SaveNewDiaryAction(Button button,  final ComboBox programType, final DateField date, final TextField textfield, final RichTextArea area )
+	{							//programType , date
+		boolean diaryExist=false;
+				try
 				 {
-					  log.debug("Now i'm getting values of fields in UI");
+					 
+					 log.debug("Now i'm getting values of fields in UI");
 					  String sProgramType = String.valueOf(programType.getValue()); //programType
 					  Date dDate = date.getValue(); //diaryCreationDate
 					  String sNameOfTrainingDiary = String.valueOf(textfield.getValue()); //diaryDescription
 					  String sDescription = String.valueOf(area.getValue());
-					  
-					  DiaryBean diary = new DiaryBean();
 					  log.debug("Now i try to save date ");
-					  DiaryBean.SaveDiary(sProgramType, dDate, sDescription, sNameOfTrainingDiary);  
+					  diaryExist=DiaryBean.SaveDiary(sProgramType, dDate, sDescription, sNameOfTrainingDiary);  
 				 }
 				 catch(Exception e)
 				 { 
@@ -54,7 +54,8 @@ public class ButtonActions extends CustomComponent
 					 log.debug(e.getMessage());
 					 e.printStackTrace();
 				 }
-	  }
+				 return diaryExist;
+	}
 	
 	public static void SaveNewTrainingIntoExistingDiaryAction(final ComboBox selectSecondTab, final RichTextArea textfieldSecondTab, DateField dateOfTraining)
 	{
@@ -151,18 +152,28 @@ public class ButtonActions extends CustomComponent
 		{
 			
 			String sProgramName=String.valueOf(selectedTrainingTemplate.get(nameOfTrainingProgram).getProgramName());
-			sTrainingDescriptionFieldContent=sTrainingDescriptionFieldContent + sProgramName + "<br><br>";   //we add to sTrainingDescriptionField program name
+			//sTrainingDescriptionFieldContent=sTrainingDescriptionFieldContent + sProgramName + "<br><br>";   //we add to sTrainingDescriptionField program name
 			
 			String sNumberOfSets=String.valueOf(selectedTrainingTemplate.get(nameOfTrainingProgram).getNumberOfSets());
-			sTrainingDescriptionFieldContent=sTrainingDescriptionFieldContent + sNumberOfSets + "<br><br>";  //we add to sTrainingDescriptionField number of sets
+			//sTrainingDescriptionFieldContent=sTrainingDescriptionFieldContent + sNumberOfSets + "<br><br>";  //we add to sTrainingDescriptionField number of sets
 			
 			String sSelectedTraining=String.valueOf(selectedTrainingTemplate.get(nameOfTrainingProgram).getProgramDescription());
 			sTrainingDescriptionFieldContent=sTrainingDescriptionFieldContent + sSelectedTraining + "<br><br>";
 			
 			String sGetTrainingType=String.valueOf(selectedTrainingTemplate.get(nameOfTrainingProgram).getTrainingType());
-			sTrainingDescriptionFieldContent=sTrainingDescriptionFieldContent + sGetTrainingType + "<br><br>";
+			//sTrainingDescriptionFieldContent=sTrainingDescriptionFieldContent + sGetTrainingType + "<br><br>";
 			
+			
+			sTrainingDescriptionFieldContent=sTrainingDescriptionFieldContent.replace("@programname@", sProgramName).replace("@trainingtype@", sGetTrainingType);
 		}
+		/*
+		 	<div align="center">@programname@<br></div>
+			<br>Training Type : @trainingtype@<br>
+			<br>@excersises_name@ x @numberofsets@ 
+			<br>@breakbetweensets@ second break between sets<br>
+			<br>
+
+		 */
 		
 		return sTrainingDescriptionFieldContent;
 	}

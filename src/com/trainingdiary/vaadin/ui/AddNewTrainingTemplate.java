@@ -42,7 +42,7 @@ public class AddNewTrainingTemplate  extends CustomComponent implements View
 		for (int i=0; i<Integer.valueOf(numberOfExcersises); i++) 
 		{
 		    // Create the table row.
-		    table.addItem(new Object[] {"",numberOfSets,breakBetweenSets},new Integer(i)); // Item identifier
+ 		    table.addItem(new Object[] {"",numberOfSets,breakBetweenSets},new Integer(i)); // Item identifier
 		}
 		 
 		table.setPageLength(8);
@@ -78,7 +78,7 @@ public class AddNewTrainingTemplate  extends CustomComponent implements View
 			public void buttonClick(ClickEvent event) 
 			{
 
-				ProgramType.SaveProgram(trainingProgramName, numberOfExcersises, numberOfSets, breakBetweenSets, programDescription);
+				ProgramType.SaveProgram(trainingProgramName, numberOfExcersises, numberOfSets, breakBetweenSets, programDescription, table);
 			
 			}
 		

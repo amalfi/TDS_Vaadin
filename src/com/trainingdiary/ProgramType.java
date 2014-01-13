@@ -2,9 +2,11 @@ package com.trainingdiary;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -21,7 +23,11 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import com.ibm.icu.text.SimpleDateFormat;
 import com.trainingdiary.database.HibernateUtil;
+import com.trainingdiary.tools.OtherFunctions;
+import com.vaadin.data.Property;
+import com.vaadin.ui.Table;
 
 
 @javax.persistence.Entity
@@ -190,15 +196,36 @@ public class ProgramType implements Serializable
 	}
 
 
-	public static void SaveProgram(String trainingProgramName, String numberOfExcersises, String numberOfSets, String breakBetweenSets, String programDescription) //method which save new training program which will be used by creating new training diary
+	public static void SaveProgram(String trainingProgramName, String numberOfExcersises, String numberOfSets, String breakBetweenSets, String programDescription, Table table) //method which save new training program which will be used by creating new training diary
 	{
+		
 	       Session session = HibernateUtil.getSessionFactory().openSession();
 	       Transaction transaction = null;
+	       String sFullDescription = OtherFunctions.ReadFile();
+	       String sExcersisesDescription ="<br>@excersises_name@ x @numberofsets@ <br>@breakbetweensets@ second break between sets<br>";
+	       String sExcersisesDescriptionHelper="";
 	       try 
 	       {
 	       log.debug("Session.beginTransaction process started");
 	          transaction = session.beginTransaction();
 	          
+	           for (Object id : table.getItemIds()) 
+		       {
+	            // Get the Property representing a cell
+				Property nameOfExcersise = table.getContainerProperty(id, "Name of Excersise");
+	            Property numberOfSetsForExcersise = table.getContainerProperty(id,"Number of sets");
+	            Property breakBetweenSetsInExcersises = table.getContainerProperty(id, "Break between sets");
+	
+	            // Get the value of the Property
+	            Object nameOfExcersiseValue = nameOfExcersise.getValue();
+	            Object numberOfSetsForExcersiseValue = numberOfSetsForExcersise.getValue();
+	            Object breakBetweenSetsInExcersisesValue = breakBetweenSetsInExcersises.getValue();
+	            
+	            sExcersisesDescriptionHelper=sExcersisesDescription.replace("@excersises_name@", String.valueOf(nameOfExcersiseValue)).replace("@numberofsets@", String.valueOf(numberOfSetsForExcersiseValue)).replace("@breakbetweensets@", String.valueOf(breakBetweenSetsInExcersisesValue));
+	            sExcersisesDescription=sExcersisesDescription+sExcersisesDescriptionHelper;
+		       } 
+	          
+	           
 	          ProgramType pm = new ProgramType();
 	          pm.setTrainingProgramName(trainingProgramName);
 	          pm.setTrainingType(trainingProgramName);
@@ -206,7 +233,7 @@ public class ProgramType implements Serializable
 	          pm.setNumberOfExcersises(numberOfExcersises);
 	          pm.setNumberOfSets(numberOfSets);
 	          pm.setBreakBetweenSets(breakBetweenSets);
-	          pm.setProgramDescription(programDescription);
+	          pm.setProgramDescription(sExcersisesDescription);
 
 	          session.save(pm);
 	           transaction.commit();

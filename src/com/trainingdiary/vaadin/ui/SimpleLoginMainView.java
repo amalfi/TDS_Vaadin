@@ -151,15 +151,11 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 //------------------------------------------- -------------------------------------------Components of SixsthTab
   Button logoutButton = new Button("Logout", new Button.ClickListener() 
   {
-
 	private static final long serialVersionUID = 1L;
-
 	@Override
       public void buttonClick(ClickEvent event) {
-
           // "Logout" the user
           getSession().setAttribute("user", null);
-
           // Refresh this view, should redirect to login view
           getUI().getNavigator().navigateTo(NAME);
       }

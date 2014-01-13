@@ -79,7 +79,7 @@ public class ButtonActions extends CustomComponent
 	
 	
 
-	public static void SaveNewTrainingType(TextArea textfieldThirdTab, ComboBox selectThirdTab)
+	public static void SaveNewTrainingType(TextArea textfieldThirdTab, ComboBox selectThirdTab, Table table)
 	{
 		 try
          {
@@ -90,7 +90,7 @@ public class ButtonActions extends CustomComponent
                  String trainingType = String.valueOf(selectThirdTab.getValue());
                 
                  log.debug("Now i try to save date ");
-                 ProgramType.SaveProgram(programName, programDescription, trainingType, trainingType, trainingType);
+                 ProgramType.SaveProgram(programName, programDescription, trainingType, trainingType, trainingType, table);
          }
          catch(Exception e)
          {

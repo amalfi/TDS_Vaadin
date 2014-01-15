@@ -26,7 +26,7 @@ public class AddNewTrainingTemplate  extends CustomComponent implements View
 	static boolean withoutError = true;
     final Table table = new Table();
     static Notification successfullAddedTrainingProgramTemplate = new Notification("Training Program temple added successfully",Notification.TYPE_HUMANIZED_MESSAGE);	
-	
+    static Notification errorDuringAddingTrainingProgramTemplate = new Notification("Error ! Training Program with this name already exist",Notification.TYPE_ERROR_MESSAGE);	
 	public static boolean AddContentToEditableTrainingTemplate(/*final Notification successfullySavedTrainingTemplate,*/ final String trainingProgramName, final String numberOfExcersises, final String numberOfSets, final String breakBetweenSets, final String programDescription, final Table table, Window window)
 	{
 		
@@ -84,13 +84,17 @@ public class AddNewTrainingTemplate  extends CustomComponent implements View
 			{
 				if(ProgramType.SaveProgram(trainingProgramName, numberOfExcersises, numberOfSets, breakBetweenSets, programDescription, table)==true)
 				{
-					successfullAddedTrainingProgramTemplate.setDelayMsec(600);
+					successfullAddedTrainingProgramTemplate.setDelayMsec(1800);
 					successfullAddedTrainingProgramTemplate.setPosition(Position.MIDDLE_CENTER);
 					successfullAddedTrainingProgramTemplate.show(Page.getCurrent());
 					log.debug("New training Program saved successfully");
+					//dodaæ walidacjê czy program treningowy o danej nazwie nie istnieje juz w bazie
 				}
 				else
 				{
+					errorDuringAddingTrainingProgramTemplate.setDelayMsec(1800);
+					errorDuringAddingTrainingProgramTemplate.setPosition(Position.MIDDLE_CENTER);
+					errorDuringAddingTrainingProgramTemplate.show(Page.getCurrent());
 					log.debug("Error during new program template saving");
 					withoutError=false;
 				}

@@ -166,6 +166,41 @@ public class ProgramType implements Serializable
 
 	}
 	
+	public static boolean checkIfProgramTemplateAlreadyExist(Session session, Transaction transaction, String programName)
+	{
+		boolean statement = false;
+	
+		try 
+	    {
+	     List checkingList = session.createQuery("from ProgramType").list(); //is worth to remember (common mistake) - when you use want to select from table, use bean name, not table name
+	     for (Iterator iterator = checkingList.iterator(); iterator.hasNext();)
+	     {
+	       if(statement==false)	
+	       	{
+	     	ProgramType pt = (ProgramType) iterator.next();
+	          		String currentProgramType=String.valueOf(pt.getTrainingProgramName());
+	     			 if(currentProgramType.equals(programName))
+	         		 {
+	         	 		 log.debug("W bazie znaleziono dziennik o istniejacej juz nazwie " + currentProgramType);
+	     				 statement=true;	
+	         		 }
+	
+	       	}
+	       
+	      }          	
+	    } 
+		
+		   catch (HibernateException e)
+	    {
+	        transaction.rollback();
+	        e.printStackTrace();
+	        log.debug(e.getMessage());
+	    } 
+	
+	return statement;
+	}
+	
+	
 	
 	public HashMap<String,Object> LoadPrograms()
 	{
@@ -202,61 +237,70 @@ public class ProgramType implements Serializable
 		  
 	       Session session = HibernateUtil.getSessionFactory().openSession();
 	       Transaction transaction = null;
-	       String sFullDescription = OtherFunctions.ReadFile();
-	       String sExcersisesDescription ="<br>@excersises_name@ x @numberofsets@ <br>@breakbetweensets@ second break between sets<br>";
-	       String sExcersisesDescriptionHelper="";
-	       try 
-	       {
-	       log.debug("Session.beginTransaction process started");
-	          transaction = session.beginTransaction();
-	          
-	           for (Object id : table.getItemIds()) 
-		       {
-	            // Get the Property representing a cell
-				Property nameOfExcersise = table.getContainerProperty(id, "Name of Excersise");
-	            Property numberOfSetsForExcersise = table.getContainerProperty(id,"Number of sets");
-	            Property breakBetweenSetsInExcersises = table.getContainerProperty(id, "Break between sets");
-	
-	            // Get the value of the Property
-	            Object nameOfExcersiseValue = nameOfExcersise.getValue();
-	            Object numberOfSetsForExcersiseValue = numberOfSetsForExcersise.getValue();
-	            Object breakBetweenSetsInExcersisesValue = breakBetweenSetsInExcersises.getValue();
-	            
-	            sExcersisesDescriptionHelper=sExcersisesDescription.replace("@excersises_name@", String.valueOf(nameOfExcersiseValue)).replace("@numberofsets@", String.valueOf(numberOfSetsForExcersiseValue)).replace("@breakbetweensets@", String.valueOf(breakBetweenSetsInExcersisesValue));
-	            sExcersisesDescription=sExcersisesDescription+sExcersisesDescriptionHelper;
-		       } 
-	          
-	           
-	          ProgramType pm = new ProgramType();
-	          pm.setTrainingProgramName(trainingProgramName);
-	          pm.setTrainingType(trainingProgramName);
-	          pm.setProgramName(trainingProgramName);
-	          pm.setNumberOfExcersises(numberOfExcersises);
-	          pm.setNumberOfSets(numberOfSets);
-	          pm.setBreakBetweenSets(breakBetweenSets);
-	          pm.setProgramDescription(sExcersisesDescription);
-
-	          session.save(pm);
-	          transaction.commit();
-	        
-	       log.debug("New Training Program Type saved succesfully");
-	       
+	       if(checkIfProgramTemplateAlreadyExist(session, transaction, trainingProgramName)==false)
+	       { 
+			       String sFullDescription = OtherFunctions.ReadFile();
+			       String sExcersisesDescription ="<br>@excersises_name@ x @numberofsets@ <br>@breakbetweensets@ second break between sets<br>";
+			       String sExcersisesDescriptionHelper="";
+	      
+			       
+			       try 
+			       {
+			       log.debug("Session.beginTransaction process started");
+			          transaction = session.beginTransaction();
+			          
+			           for (Object id : table.getItemIds()) 
+				       {
+			            // Get the Property representing a cell
+						Property nameOfExcersise = table.getContainerProperty(id, "Name of Excersise");
+			            Property numberOfSetsForExcersise = table.getContainerProperty(id,"Number of sets");
+			            Property breakBetweenSetsInExcersises = table.getContainerProperty(id, "Break between sets");
+			
+			            // Get the value of the Property
+			            Object nameOfExcersiseValue = nameOfExcersise.getValue();
+			            Object numberOfSetsForExcersiseValue = numberOfSetsForExcersise.getValue();
+			            Object breakBetweenSetsInExcersisesValue = breakBetweenSetsInExcersises.getValue();
+			            
+			            sExcersisesDescriptionHelper=sExcersisesDescription.replace("@excersises_name@", String.valueOf(nameOfExcersiseValue)).replace("@numberofsets@", String.valueOf(numberOfSetsForExcersiseValue)).replace("@breakbetweensets@", String.valueOf(breakBetweenSetsInExcersisesValue));
+			            sExcersisesDescription=sExcersisesDescription+sExcersisesDescriptionHelper;
+				       } 
+			          
+			           
+			          ProgramType pm = new ProgramType();
+			          pm.setTrainingProgramName(trainingProgramName);
+			          pm.setTrainingType(trainingProgramName);
+			          pm.setProgramName(trainingProgramName);
+			          pm.setNumberOfExcersises(numberOfExcersises);
+			          pm.setNumberOfSets(numberOfSets);
+			          pm.setBreakBetweenSets(breakBetweenSets);
+			          pm.setProgramDescription(sExcersisesDescription);
+		
+			          session.save(pm);
+			          transaction.commit();
+			        
+			       log.debug("New Training Program Type saved succesfully");
+			       
+			       }
+			       catch (HibernateException e) 
+			       {
+			    	   successFullySaved=false;
+		
+			    	   log.debug(e.getMessage());
+			    	   transaction.rollback();
+			           e.printStackTrace();
+			       } 
+			       
+			       finally 
+			       {
+			           session.close();
+			       }
 	       }
-	       catch (HibernateException e) 
+	       else
 	       {
 	    	   successFullySaved=false;
-
-	    	   log.debug(e.getMessage());
-	    	   transaction.rollback();
-	           e.printStackTrace();
-	       } 
-	       
-	       finally 
-	       {
-	           session.close();
 	       }
-	       return successFullySaved;
-	
+    	   return successFullySaved;
+	       
 	}
 }
 

@@ -33,8 +33,6 @@
     <mapping resource="programType.hbm.xml"></mapping>  
     <mapping resource="training.hbm.xml"></mapping>  
     
- 	 
- 	 
   </session-factory>
    
 </hibernate-configuration>

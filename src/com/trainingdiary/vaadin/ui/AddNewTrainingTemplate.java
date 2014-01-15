@@ -6,11 +6,14 @@ import com.trainingdiary.ProgramType;
 import com.vaadin.data.Property;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.server.Page;
+import com.vaadin.shared.Position;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Window;
 
@@ -20,13 +23,15 @@ public class AddNewTrainingTemplate  extends CustomComponent implements View
 	private static final long serialVersionUID = 1L;
 
 	static Logger log = Logger.getLogger(CreateNewAccountPopup.class);
-
+	static boolean withoutError = true;
     final Table table = new Table();
-
+    static Notification successfullAddedTrainingProgramTemplate = new Notification("Training Program temple added successfully",Notification.TYPE_HUMANIZED_MESSAGE);	
 	
-	public static void AddContentToEditableTrainingTemplate(/*final Notification successfullySavedTrainingTemplate,*/ final String trainingProgramName, final String numberOfExcersises, final String numberOfSets, final String breakBetweenSets, final String programDescription, final Table table, Window window)
+	public static boolean AddContentToEditableTrainingTemplate(/*final Notification successfullySavedTrainingTemplate,*/ final String trainingProgramName, final String numberOfExcersises, final String numberOfSets, final String breakBetweenSets, final String programDescription, final Table table, Window window)
 	{
-	
+		
+		try
+		{
 	    Button generatePDF = new Button("Generate PDF");
 	    Button saveNewTrainingProgram = new Button("Save new training program");
 		FormLayout content = new FormLayout();
@@ -77,8 +82,18 @@ public class AddNewTrainingTemplate  extends CustomComponent implements View
 			@Override
 			public void buttonClick(ClickEvent event) 
 			{
-
-				ProgramType.SaveProgram(trainingProgramName, numberOfExcersises, numberOfSets, breakBetweenSets, programDescription, table);
+				if(ProgramType.SaveProgram(trainingProgramName, numberOfExcersises, numberOfSets, breakBetweenSets, programDescription, table)==true)
+				{
+					successfullAddedTrainingProgramTemplate.setDelayMsec(600);
+					successfullAddedTrainingProgramTemplate.setPosition(Position.MIDDLE_CENTER);
+					successfullAddedTrainingProgramTemplate.show(Page.getCurrent());
+					log.debug("New training Program saved successfully");
+				}
+				else
+				{
+					log.debug("Error during new program template saving");
+					withoutError=false;
+				}
 			
 			}
 		
@@ -88,7 +103,16 @@ public class AddNewTrainingTemplate  extends CustomComponent implements View
 		content.setMargin(true);
 		window.setContent(content);
 		
+		}
+		catch(Exception e)
+		{
+			log.debug(e.getCause(),e);
+			withoutError=false;
+		}
 		
+		
+		return withoutError;
+	
 	}
 	
 	public static boolean fieldValidator(String sTrainingProgramName, String sNumberOfExcersises, String sNumberOfSetsOfEachExcersise, String sBreakBetweenSets, String sTextFieldThirdTab, Table table2, Window window2)

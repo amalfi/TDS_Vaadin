@@ -1,0 +1,4 @@
+<div align="center">@programname@<br></div>
+<br>Training Type : @trainingtype@<br>
+
+<br>@excersises_name@ x @numberofsets@ <br>@breakbetweensets@ second break between sets<br><

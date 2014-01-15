@@ -196,9 +196,10 @@ public class ProgramType implements Serializable
 	}
 
 
-	public static void SaveProgram(String trainingProgramName, String numberOfExcersises, String numberOfSets, String breakBetweenSets, String programDescription, Table table) //method which save new training program which will be used by creating new training diary
+	public static boolean SaveProgram(String trainingProgramName, String numberOfExcersises, String numberOfSets, String breakBetweenSets, String programDescription, Table table) //method which save new training program which will be used by creating new training diary
 	{
-		
+		   boolean successFullySaved=true;
+		  
 	       Session session = HibernateUtil.getSessionFactory().openSession();
 	       Transaction transaction = null;
 	       String sFullDescription = OtherFunctions.ReadFile();
@@ -236,24 +237,26 @@ public class ProgramType implements Serializable
 	          pm.setProgramDescription(sExcersisesDescription);
 
 	          session.save(pm);
-	           transaction.commit();
+	          transaction.commit();
 	        
 	       log.debug("New Training Program Type saved succesfully");
 	       
 	       }
 	       catch (HibernateException e) 
 	       {
+	    	   successFullySaved=false;
+
+	    	   log.debug(e.getMessage());
 	    	   transaction.rollback();
 	           e.printStackTrace();
-	           log.debug(e.getMessage());
 	       } 
 	       
 	       finally 
 	       {
 	           session.close();
 	       }
-		
-		
+	       return successFullySaved;
+	
 	}
 }
 

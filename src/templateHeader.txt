@@ -1,0 +1,2 @@
+<div align="center">@programname@<br></div>
+<br>Short training program description : @trainingtype@<br>

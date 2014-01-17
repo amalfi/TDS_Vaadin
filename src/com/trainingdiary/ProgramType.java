@@ -231,6 +231,7 @@ public class ProgramType implements Serializable
 	}
 
 
+	@SuppressWarnings("rawtypes")
 	public static boolean SaveProgram(String trainingProgramName, String numberOfExcersises, String numberOfSets, String breakBetweenSets, String programDescription, Table table) //method which save new training program which will be used by creating new training diary
 	{
 		   boolean successFullySaved=true;
@@ -239,10 +240,14 @@ public class ProgramType implements Serializable
 	       Transaction transaction = null;
 	       if(checkIfProgramTemplateAlreadyExist(session, transaction, trainingProgramName)==false)
 	       { 
-			       String sFullDescription = OtherFunctions.ReadFile();
-			       String sExcersisesDescription ="<br>@excersises_name@ x @numberofsets@ <br>@breakbetweensets@ second break between sets<br>";
-			       String sExcersisesDescriptionHelper="";
-	      
+	    	       //Variables which will be used to generate DescriptionField
+			       String sHeaderTemplateContent = OtherFunctions.ReadHeaderTemplateFromFile();
+			       String sExcersiseTemplateContent = OtherFunctions.ReadExcersiseTemplateFromFile();
+			       String sExcersiseTemplateContentOriginal=sExcersiseTemplateContent;
+			       String sExcersisesDescription="";
+			       String sHeaderString = sHeaderTemplateContent.replace("@programname@", trainingProgramName).replace("@trainingtype@", programDescription);
+			     //--------------------------------------------------------------------------------
+			       String sFullDescription = "";
 			       
 			       try 
 			       {
@@ -251,6 +256,7 @@ public class ProgramType implements Serializable
 			          
 			           for (Object id : table.getItemIds()) 
 				       {
+			        	   
 			            // Get the Property representing a cell
 						Property nameOfExcersise = table.getContainerProperty(id, "Name of Excersise");
 			            Property numberOfSetsForExcersise = table.getContainerProperty(id,"Number of sets");
@@ -261,9 +267,18 @@ public class ProgramType implements Serializable
 			            Object numberOfSetsForExcersiseValue = numberOfSetsForExcersise.getValue();
 			            Object breakBetweenSetsInExcersisesValue = breakBetweenSetsInExcersises.getValue();
 			            
-			            sExcersisesDescriptionHelper=sExcersisesDescription.replace("@excersises_name@", String.valueOf(nameOfExcersiseValue)).replace("@numberofsets@", String.valueOf(numberOfSetsForExcersiseValue)).replace("@breakbetweensets@", String.valueOf(breakBetweenSetsInExcersisesValue));
-			            sExcersisesDescription=sExcersisesDescription+sExcersisesDescriptionHelper;
+			            String sNameOfExcersiseValue = String.valueOf(nameOfExcersiseValue);
+			            String sNumberOfSetsForExcersiseValue=String.valueOf(numberOfSetsForExcersiseValue);
+			            String sBreakBetweenSetsInExcersiseValue = String.valueOf(breakBetweenSetsInExcersisesValue);
+			            
+			            sExcersiseTemplateContent=sExcersiseTemplateContentOriginal.replace("@excersises_name@", sNameOfExcersiseValue)
+			            		.replace("@numberofsets@", sNumberOfSetsForExcersiseValue)
+			            		.replace("@breakbetweensets@", sBreakBetweenSetsInExcersiseValue);
+			            
+			            sExcersisesDescription=sExcersisesDescription+sExcersiseTemplateContent;
+			            log.debug(sExcersisesDescription);
 				       } 
+			           sFullDescription=sHeaderString+"<br>"+sExcersisesDescription;
 			          
 			           
 			          ProgramType pm = new ProgramType();
@@ -273,7 +288,7 @@ public class ProgramType implements Serializable
 			          pm.setNumberOfExcersises(numberOfExcersises);
 			          pm.setNumberOfSets(numberOfSets);
 			          pm.setBreakBetweenSets(breakBetweenSets);
-			          pm.setProgramDescription(sExcersisesDescription);
+			          pm.setProgramDescription(sFullDescription);
 		
 			          session.save(pm);
 			          transaction.commit();

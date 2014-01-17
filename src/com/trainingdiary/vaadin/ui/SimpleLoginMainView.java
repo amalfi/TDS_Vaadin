@@ -154,6 +154,7 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
    
 
 //------------------------------------------- -------------------------------------------Components of SixsthTab
+  
   Button logoutButton = new Button("Logout", new Button.ClickListener() 
   {
 	private static final long serialVersionUID = 1L;

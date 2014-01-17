@@ -13,9 +13,11 @@ import com.trainingdiary.DiaryBean;
 import com.trainingdiary.Training;
 import com.trainingdiary.tools.ButtonActions;
 import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.components.calendar.event.BasicEvent;
 
 
@@ -23,12 +25,14 @@ public class UserProfile extends CustomComponent
 {
 	static Logger log = Logger.getLogger(UserProfile.class);
 	private static final long serialVersionUID = 1L;
-
+	com.vaadin.ui.Calendar calendar = new com.vaadin.ui.Calendar("Current User Calendar");
+	
 	public UserProfile()
 	{
 		String currentUserNameValue = SimpleLoginView.currentLoadedUser;
 		String timeStamp = new SimpleDateFormat("yyyy MM dd").format(Calendar.getInstance().getTime());
-		com.vaadin.ui.Calendar calendar = new com.vaadin.ui.Calendar("Current User Calendar");
+
+		Button refreshTrainingsOnCalendar = new Button("Refresh Calendar");
 		VerticalLayout vl = new VerticalLayout();
 		//----------------------------------------------------------------------------------------------------
 		
@@ -55,8 +59,25 @@ public class UserProfile extends CustomComponent
 			calendar.addEvent(new BasicEvent(diaryName,"Trainings", currentlyTrainingDate, currentlyTrainingDate));
 		}
 		//----------------------------------------------------------------------------------------------------
+		refreshTrainingsOnCalendar.addClickListener(new Button.ClickListener() 
+		{
+			
+			@Override
+			public void buttonClick(ClickEvent event) {
+				ArrayList<Training> listOfTrainings = Training.LoadTrainings();
+				for(int j=0; j<listOfTrainings.size(); j++)
+				{
+					Date currentlyTrainingDate = listOfTrainings.get(j).getTrainingDate();
+					String diaryName = listOfTrainings.get(j).getChoosedDiary();
+					calendar.addEvent(new BasicEvent("Training","Trainings", currentlyTrainingDate, currentlyTrainingDate));
+				}
+			}
+		});
+		
+		//----------------------------------------------------------------------------------------------------
 		
 		vl.setMargin(true);
+		vl.addComponent(refreshTrainingsOnCalendar);
 		vl.addComponent(label);
 		vl.addComponent(currentDateLabel);
 		vl.addComponent(label2);

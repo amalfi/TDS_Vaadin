@@ -91,6 +91,7 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
   ComboBox select = new ComboBox("Training Programs templates list");
   DateField date = new DateField("Diary creation date");
   RichTextArea area = new RichTextArea("Description");
+  
  // CustomTabSheet ctb = new CustomTabSheet();
   
   Label label = new Label();
@@ -119,6 +120,8 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
   //DateField dateOfTraining = new DateField("Date of Training"); //replaced with DatePicker with time in minutes
   PopupDateField dateOfTraining = new PopupDateField("Date of Training");
   
+  Button refreshTemplatesList = new Button("Refresh list of training templates");
+  Button refreshTrainingDiariesList = new Button("Refresh training diaries list");
   Button loadDiaryTemplate = new Button("Load diary template");
   Button buttonInSecondTab = new Button("Add new training");
 
@@ -139,12 +142,14 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 //------------------------------------------- -------------------------------------------Components of FourthTab
   final Table table = new Table();
   final CheckBox switchEditable = new CheckBox("Editable");
+  Button refreshEditDiaryTable = new Button("Refresh table content");
   Button saveChangesInEditedDiary = new Button("Save changes");
  
 //------------------------------------------- -------------------------------------------Components of FifthTab
   	
   final Table tableEditTraining = new Table();
  // final CheckBox switchEditableTrainingTable = new CheckBox("Editable");
+  Button refreshEditTrainingTable = new Button("Refresh edit existing training table");
   Button saveChangesInEditedTraining = new Button("Save changes");
    
 
@@ -204,6 +209,11 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 	  verticalViewCreateNewDiary.addComponent(area);
 	  	verticalViewCreateNewDiary.setComponentAlignment(area, Alignment.MIDDLE_LEFT);
 		 
+
+		/*  verticalViewCreateNewDiary.addComponent(refreshDiaryList);
+		  	verticalViewCreateNewDiary.setComponentAlignment(refreshDiaryList, Alignment.MIDDLE_CENTER);
+			 
+	  	*/
 	  verticalViewCreateNewDiary.addComponent(button);
 	  	verticalViewCreateNewDiary.setComponentAlignment(button, Alignment.MIDDLE_CENTER);
 		 
@@ -226,16 +236,17 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 	  //-------------------------------------------
 	  
 	  DiaryBean diarybean = new DiaryBean();  	
-  	 verticalAddNewTrainingIntoExistingDiary.addComponent(select);
+  	  verticalAddNewTrainingIntoExistingDiary.addComponent(select);
  	  verticalAddNewTrainingIntoExistingDiary.setComponentAlignment(select, Alignment.MIDDLE_LEFT);
 	 
- 	 verticalAddNewTrainingIntoExistingDiary.addComponent(loadDiaryTemplate);
+ 	  verticalAddNewTrainingIntoExistingDiary.addComponent(refreshTemplatesList);
+	  verticalAddNewTrainingIntoExistingDiary.setComponentAlignment(refreshTemplatesList, Alignment.MIDDLE_CENTER);
+	  
+ 	  verticalAddNewTrainingIntoExistingDiary.addComponent(loadDiaryTemplate);
 	  verticalAddNewTrainingIntoExistingDiary.setComponentAlignment(loadDiaryTemplate, Alignment.MIDDLE_CENTER);
 	
-  	  
-	  verticalAddNewTrainingIntoExistingDiary.addComponent(textfieldSecondTab);
+  	  verticalAddNewTrainingIntoExistingDiary.addComponent(textfieldSecondTab);
 	  verticalAddNewTrainingIntoExistingDiary.setComponentAlignment(textfieldSecondTab, Alignment.MIDDLE_LEFT);
-	  //textfieldSecondTab.setRequired(true);
 	  
 	  verticalAddNewTrainingIntoExistingDiary.addComponent(selectSecondTab);
 	  verticalAddNewTrainingIntoExistingDiary.setComponentAlignment(selectSecondTab, Alignment.MIDDLE_LEFT);
@@ -274,6 +285,11 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 		verticalAddNewTrainingProgram.setComponentAlignment(textfieldThirdTab, Alignment.MIDDLE_LEFT);	
 			textfieldThirdTab.setRequired(true);;
 		
+/*
+    verticalAddNewTrainingProgram.addComponent(refreshTrainingProgramsList);
+		verticalAddNewTrainingProgram.setComponentAlignment(refreshTrainingProgramsList, Alignment.MIDDLE_CENTER);
+			  		*/
+			
     verticalAddNewTrainingProgram.addComponent(buttonInThirdTab);
 		verticalAddNewTrainingProgram.setComponentAlignment(buttonInThirdTab, Alignment.MIDDLE_CENTER);
 	  
@@ -322,13 +338,44 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 			}
 		);
 		
+		refreshEditDiaryTable.addClickListener(new Button.ClickListener()
+		{
+
+			@Override
+			public void buttonClick(ClickEvent event) 
+			{
+				//table.removeAllItems();
+			//---------------------------------------------------------------------------------------------------
+			DiaryBean diarybeanForRefreshing = new DiaryBean();
+			ArrayList<DiaryBean> dzienniki = diarybeanForRefreshing.loadDiariesArray();
+				
+				table.addContainerProperty("Id", Integer.class, null);
+				table.addContainerProperty("Name", String.class, null);
+				table.addContainerProperty("Date", String.class, null);
+				table.addContainerProperty("Training Program", String.class, null);
+				table.addContainerProperty("Description", String.class, null);
+				
+				for(int j=0; j<dzienniki.size(); j++)	
+				{
+				Integer id = Integer.valueOf(String.valueOf(dzienniki.get(j).getId()));
+				String nameOfDiary = String.valueOf(dzienniki.get(j).getNameOfDiary());
+				String diaryCreationDate = String.valueOf(dzienniki.get(j).getDiaryCreationDate());
+				String choosedDiary = String.valueOf(dzienniki.get(j).getChoosedTrainingPlan());
+				String diaryDescription =  String.valueOf(dzienniki.get(j).getDiaryDescription());	
+				
+				table.addItem(new Object[] {id, nameOfDiary, diaryCreationDate , diaryDescription, choosedDiary ,},j);
+				}
+			}
+		});
+		
 		editExistingDiary.addComponent(switchEditable);
 		editExistingDiary.addComponent(table);
+		editExistingDiary.addComponent(refreshEditDiaryTable);
 		editExistingDiary.addComponent(saveChangesInEditedDiary);
     
 //******************************************************************END OF EDIT EXSITING DIARY*********************************************************************
 //******************************************************************EDIT EXSITING TRAINING*********************************************************************
-		ArrayList<Training>treningi = Training.LoadTrainings();	
+		ArrayList<Training> treningi = Training.LoadTrainings();	
 		
 		tableEditTraining.addContainerProperty("Id", Integer.class, null);
 		tableEditTraining.addContainerProperty("Description", String.class, null);
@@ -344,7 +391,10 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 		}
 	 
 		final CheckBox switchEditableTrainingTable = new CheckBox("Edit training");
-		switchEditableTrainingTable.addValueChangeListener(
+		switchEditableTrainingTable.setImmediate(true);
+		
+		switchEditableTrainingTable.addValueChangeListener
+		(
 		new Property.ValueChangeListener() 
 		{
 			private static final long serialVersionUID = 1L;
@@ -357,35 +407,58 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 		});
 		
 		
+		 
 		 verticalEditExistingTraining.addComponent(switchEditableTrainingTable);
 		 verticalEditExistingTraining.addComponent(tableEditTraining);
+		 verticalEditExistingTraining.addComponent(refreshEditTrainingTable);
 		 verticalEditExistingTraining.addComponent(saveChangesInEditedTraining);
-		
 
-
-		 saveChangesInEditedTraining.addClickListener(new Button.ClickListener() 
-		  {
+		 refreshEditTrainingTable.addClickListener(new Button.ClickListener()
+		 {
 			private static final long serialVersionUID = 1L;
-			public void buttonClick(ClickEvent event) 
-			  {
-				
-				try
-				{
-					ButtonActions.saveChangesIntoEditedTrainings(tableEditTraining);
-					successfullAddedDiaryNotification.setDelayMsec(600);
-					successfullAddedDiaryNotification.setPosition(Position.MIDDLE_CENTER);
-					successfullAddedDiaryNotification.show(Page.getCurrent());
 
-				}
-				catch (ParseException e) 
+			@Override
+			public void buttonClick(ClickEvent event) 
+			{
+				ArrayList<Training>treningi = Training.LoadTrainings();	
+				
+				tableEditTraining.addContainerProperty("Id", Integer.class, null);
+				tableEditTraining.addContainerProperty("Description", String.class, null);
+				tableEditTraining.addContainerProperty("Choosed Diary", String.class, null);
+				//tableEditTraining.addContainerProperty("Training date" , Date.class, null);
+				for(int j=0; j<treningi.size(); j++)
 				{
-					log.debug(e.getCause(),e);
-					e.printStackTrace();
+					Integer id = treningi.get(j).getId();
+					String description = String.valueOf(treningi.get(j).getDescription());
+					String choosedDiary = String.valueOf(treningi.get(j).getChoosedDiary());
+					
+					tableEditTraining.addItem(new Object[] {id,description, choosedDiary},j);
 				}
-			  }
+			}
+		});
+		 
+	 saveChangesInEditedTraining.addClickListener(new Button.ClickListener() 
+	  {
+		private static final long serialVersionUID = 1L;
+		public void buttonClick(ClickEvent event) 
+		  {
+			
+			try
+			{
+				ButtonActions.saveChangesIntoEditedTrainings(tableEditTraining);
+				successfullAddedDiaryNotification.setDelayMsec(600);
+				successfullAddedDiaryNotification.setPosition(Position.MIDDLE_CENTER);
+				successfullAddedDiaryNotification.show(Page.getCurrent());
+
+			}
+			catch (ParseException e) 
+			{
+				log.debug(e.getCause(),e);
+				e.printStackTrace();
+			}
 		  }
-		  ); 
-		
+	  }); 
+	
 //******************************************************************END OF EDIT EXSITING TRAINING********************************************************************
 
 //******************************************************************LOGOUT*********************************************************************
@@ -417,7 +490,25 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 			}
 		  }
 	  }
+	   
 	  );
+	  
+	  refreshTemplatesList.addClickListener(new Button.ClickListener() //refresh list of training programs because there is no ajax implemented yet (same reason for other refresh buttons) ;)
+	  {
+			
+			@Override
+			public void buttonClick(ClickEvent event) 
+			{
+				ArrayList<String> trainingsPrograms = new ArrayList<String>();
+			      trainingsPrograms = ProgramType.LoadProgramTypesToArrayList();
+				  
+			      for(int i=0; i<trainingsPrograms.size(); i++)
+			      {
+			    	  select.addItem(trainingsPrograms.get(i));
+			      }
+			}
+		});
+		
 
 //******************************************************************END OF Action of 'Save new diary' button ************************************************	 
 //******************************************************************Action of 'Add new training' button ************************************************	
@@ -518,6 +609,8 @@ public class SimpleLoginMainView extends CustomComponent implements View  //tuta
 		  }
 	  }
 	  ); 
+	  
+
 	  
 //******************************************************************END OF Action of 'Save changes' (Edit existing diary) button ************************************************	 	  
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& Button Actions	&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&  

@@ -33,6 +33,7 @@ public class AddNewTrainingTemplate  extends CustomComponent implements View
 		try
 		{
 	    Button generatePDF = new Button("Generate PDF");
+	    generatePDF.setVisible(false);
 	    Button saveNewTrainingProgram = new Button("Save new training program");
 		FormLayout content = new FormLayout();
 		

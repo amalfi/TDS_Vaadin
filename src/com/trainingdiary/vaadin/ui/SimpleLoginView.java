@@ -175,9 +175,9 @@ public class SimpleLoginView extends CustomComponent implements View, Button.Cli
 	         // fields we reduce the amount of queries we have to use to the database
 	         // for wrongly entered passwords
 	         //
-	        if (!user.isValid() || !password.isValid()) {
+	     /*   if (!user.isValid() || !password.isValid()) {
 	            return;
-	        }
+	        }*/
 	
 	        String username = user.getValue();
 	        currentLoadedUser = user.getValue();
